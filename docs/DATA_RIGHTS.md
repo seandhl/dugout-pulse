@@ -1,6 +1,6 @@
 # 데이터 권리 및 공급 승인 대장
 
-기준일: 2026-11-03 (Asia/Seoul). 현재 운영 모드: **DEMO**. 실제 소스에 대한 계약 증빙은 없다. 실제 데이터 수집·저장·가공·노출은 승인되지 않았다. 이 문서는 내부 승인 정책이며 법률 의견이나 공급 계약을 대신하지 않는다.
+기준일: 2026-11-04 (Asia/Seoul). 현재 운영 모드: **DEMO**. 실제 소스에 대한 계약 증빙은 없다. 실제 데이터 수집·저장·가공·노출은 승인되지 않았다. 이 문서는 내부 승인 정책이며 법률 의견이나 공급 계약을 대신하지 않는다.
 
 ## 1. KBO 고지와 적용 원칙
 
@@ -67,3 +67,17 @@
 향후 P2 계약은 `sourceId`, `rightsRecordId`, `batchId`, `isDemo`, 데이터 기준 시각 `asOf`, 별도 수입 시각, 시즌, 대회(정규시즌/포스트시즌), 표본 크기/단위를 필수로 한다. 파생 수치는 모든 원천 ID·배치·권리 기록·계산 버전을 보존한다. 이는 설계 요구이며 스키마 구현 완료가 아니다. 실제/가상 혼합 배치는 거부한다.
 
 현재: **DEMO 전용 정책 승인 / 실제 데이터 전환 불가 / 공개 출시 미승인**. fixture와 앱이 아직 없으므로 D의 개별 산출물 검수도 미완료다. [출시 게이트](RELEASE_GATES.md)의 기계적 검사와 수동 검수를 모두 적용한다.
+
+## 6. 공급 경로 공개 조사 (2026-11-04)
+
+[공급 결정·근거·필드별 공백·문의 이메일 초안](DATA_PROVIDER_DECISION.md)을 추가했다. 문의 경로는 KBO 권리 담당 확인 → 스포츠투아이 공급 협의를 우선하며 Sportradar를 대체 검토 후보로 둔다. 이는 문의 순서 채택이며 공급 계약 체결이나 사용 승인이 아니다.
+
+| 조사 후보 | 공개 근거 | 결론 |
+| --- | --- | --- |
+| P-KBO | [KBO 고지 및 대표전화 02-3460-4600](https://www.koreabaseball.com/kbo/board/notice/View.aspx?boardSe=12148) | 공식 권리 담당·계약 주체·API 문서 확인 요청; pending |
+| P-SPORTS2I | [KBO 약관의 서비스 회사](https://m.koreabaseball.com/Member/Join/Accessterms.aspx?appCk=false), [개발자 공개 연락처](https://play.google.com/store/apps/details?hl=ko&id=com.sports2i.kbo) | support@sports2i.com / +82 31-706-7637은 앱 개발자 창구. 데이터 사업 부서 연결 및 재허락 증빙 요청; pending |
+| P-SPORTRADAR | [Global Baseball FAQ](https://developer.sportradar.com/baseball/reference/global-baseball-faq), [공식 영업 문의](https://sportradar.com/contact/) | KBO 커버리지 언급과 API 문서는 있으나 요구 필드 완전성·한국 서비스 재허락 미확인; pending |
+
+모든 후보에서 수집·저장·가공·공개·재배포 권한, KBO 대상 갱신 한도, 가격, 상업 이용, 계약 유효기간은 미확인이다. 세부 항목은 결정 문서에서 분리했다. A/B/C는 계속 pending, LICENSED_API는 NOT_CONFIGURED다. 실제 선수 **이름**의 성명 이용·인격권·개인정보·상업 표시 검토도 사진/초상·로고/상표와 독립적으로 pending이다. 데이터 접근권에서 이들 자산의 권리를 추론하지 않는다.
+
+위 4~5절의 “fixture와 앱이 아직 없음”, 개별 파일 미작성 등은 초기 정책 작성 당시 상태다. 현재 자체 가상 fixture와 DEMO 앱이 존재하며 공급자 차단은 src/server/ingest/provider.ts와 gate.ts에 구현되어 있다. 이번 조사로 실제 권리 승인 또는 출시 승인이 생기지 않는다. 문의는 발송하지 않았으며 실제 기록·계정·키를 가져오지 않았다.

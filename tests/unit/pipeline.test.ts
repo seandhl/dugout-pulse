@@ -89,7 +89,8 @@ describe("transactional DEMO publication", () => {
     expect(stats.demo).toBe(true);
     expect(stats.season.totals.h).toBe(2);
     expect(stats.season.metrics.avg.value).toBe(0.5);
-    expect(stats.season.metrics.obp.reason).toBe("missing_fields");
+    expect(stats.season.metrics.obp.value).toBe(0.5);
+    expect(stats.season.metrics.obp.reason).toBeNull();
     await seed(p);
     await seed(p);
     expect((await p.publicResults(2026, "regular")).records).toHaveLength(

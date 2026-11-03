@@ -1,0 +1,146 @@
+{
+  "axe": [
+    {
+      "theme": "light",
+      "path": "/",
+      "violations": []
+    },
+    {
+      "theme": "light",
+      "path": "/players",
+      "violations": []
+    },
+    {
+      "theme": "light",
+      "path": "/players/demo_0_00",
+      "violations": []
+    },
+    {
+      "theme": "light",
+      "path": "/compare?players=demo_0_00,demo_0_03",
+      "violations": []
+    },
+    {
+      "theme": "light",
+      "path": "/rankings",
+      "violations": []
+    },
+    {
+      "theme": "dark",
+      "path": "/",
+      "violations": []
+    },
+    {
+      "theme": "dark",
+      "path": "/players",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": [
+            {
+              "target": [
+                "input"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.05 (foreground color: #172b25, background color: #182430, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "label:nth-child(2) > select"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.05 (foreground color: #172b25, background color: #182430, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "label:nth-child(3) > select"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.05 (foreground color: #172b25, background color: #182430, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "label:nth-child(4) > select[aria-describedby=\"roster-reason\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.05 (foreground color: #172b25, background color: #182430, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "path": "/players/demo_0_00",
+      "violations": []
+    },
+    {
+      "theme": "dark",
+      "path": "/compare?players=demo_0_00,demo_0_03",
+      "violations": []
+    },
+    {
+      "theme": "dark",
+      "path": "/rankings",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": [
+            {
+              "target": [
+                "input[type=\"number\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.05 (foreground color: #172b25, background color: #182430, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "select[name=\"competition\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.05 (foreground color: #172b25, background color: #182430, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "select[name=\"window\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.05 (foreground color: #172b25, background color: #182430, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "target": [
+                "input[type=\"date\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.05 (foreground color: #172b25, background color: #182430, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "flow": [
+    {
+      "step": "search",
+      "url": "http://127.0.0.1:3107/players?q=%EA%B0%80%EC%83%81+A-01"
+    },
+    {
+      "step": "detail",
+      "url": "http://127.0.0.1:3107/players/demo_0_00"
+    },
+    {
+      "step": "compare",
+      "url": "http://127.0.0.1:3107/compare?players=demo_0_00"
+    },
+    {
+      "step": "selected-two",
+      "url": "http://127.0.0.1:3107/compare?players=demo_0_00%2Cdemo_0_01&window=10&season=2026&competition=regular&q="
+    },
+    {
+      "step": "rankings",
+      "url": "http://127.0.0.1:3107/rankings"
+    },
+    {
+      "step": "back",
+      "url": "http://127.0.0.1:3107/compare?players=demo_0_00%2Cdemo_0_01&window=10&season=2026&competition=regular&q="
+    }
+  ],
+  "skip": {
+    "text": "본문으로 건너뛰기",
+    "outline": "rgb(7, 107, 82) solid 3px"
+  }
+}

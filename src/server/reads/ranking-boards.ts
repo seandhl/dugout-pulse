@@ -1,12 +1,10 @@
 import "server-only";
+import { publicationBasis } from "./comparison-basis";
 import { z } from "zod";
 import type { BoardQuery } from "../../contracts/ranking-boards";
 import type { PipelineState } from "../ingest/pipeline";
-import {
-  modelVersion,
-  type MomentumSnapshot,
-  type PublicRole,
-} from "./momentum";
+import type { MomentumSnapshot, PublicRole } from "./momentum";
+import { modelVersion } from "./momentum-version";
 import { kstDate } from "./scope";
 import { rowKey } from "../ingest/files";
 const summary = z
@@ -25,8 +23,11 @@ const summary = z
   })
   .passthrough();
 export const boardRoles = ["hitter", "starter", "reliever"] as const;
-export const displayNumber = (n: number) => Math.round(n * 10) / 10;
-export function selectRankingBoards(state: PipelineState, q: BoardQuery) {
+export function selectRankingBoards(
+  state: PipelineState,
+  q: BoardQuery,
+  limit = 20,
+) {
   const scoped = Object.values(state.momentumSnapshots ?? {}).filter(
     (s) =>
       s.season === q.season &&
@@ -119,8 +120,7 @@ export function selectRankingBoards(state: PipelineState, q: BoardQuery) {
       (min[2] === 0 || (w.outs ?? -1) >= min[2]);
     return {
       ...s,
-      score: s.score === null ? null : displayNumber(s.score),
-      deltaScore: s.deltaScore === null ? null : displayNumber(s.deltaScore),
+      comparisonBasis: publicationBasis(state, s),
       name: String(player?.row.display_name ?? s.playerId),
       teams: [
         ...new Set(
@@ -130,6 +130,10 @@ export function selectRankingBoards(state: PipelineState, q: BoardQuery) {
                 String(gamesById.get(gameId)?.row.played_on ?? "");
               return (
                 played(b.row.game_id).localeCompare(played(a.row.game_id)) ||
+                Number(gamesById.get(b.row.game_id)?.row.doubleheader_no ?? 1) -
+                  Number(
+                    gamesById.get(a.row.game_id)?.row.doubleheader_no ?? 1,
+                  ) ||
                 String(b.row.game_id).localeCompare(String(a.row.game_id))
               );
             })
@@ -142,6 +146,8 @@ export function selectRankingBoards(state: PipelineState, q: BoardQuery) {
       enough,
     };
   }
+  // Team is a membership filter within the published global window.
+  // Never recompute scores, features or eligibility against a team population.
   const enriched = snapshots.map(enrich);
   const teams = [...new Set(enriched.flatMap((s) => s.teams))].sort();
   const boards = boardRoles.map((role: PublicRole) => {
@@ -170,16 +176,21 @@ export function selectRankingBoards(state: PipelineState, q: BoardQuery) {
           (q.sort === "decline" ? value(a) - value(b) : value(b) - value(a)) ||
           (a.playerId < b.playerId ? -1 : a.playerId > b.playerId ? 1 : 0),
       );
-    const pages = Math.max(1, Math.ceil(ranked.length / 20));
+    // Rank the entire filtered population before slicing: ties can span pages.
+    let rank = 0;
+    const withRanks = ranked.map((s, i) => {
+      if (i === 0 || value(s) !== value(ranked[i - 1])) rank = i + 1;
+      return { ...s, rank };
+    });
+    const pages = Math.max(1, Math.ceil(ranked.length / limit));
     const page = Math.min(q.page, pages);
     return {
       role,
       total: ranked.length,
       pages,
       page,
-      rows: ranked
-        .slice((page - 1) * 20, page * 20)
-        .map((s, i) => ({ ...s, rank: (page - 1) * 20 + i + 1 })),
+      rows: withRanks.slice((page - 1) * limit, page * limit),
+      excludedRows: rows.filter((s) => !ranked.includes(s)),
       excluded: rows.filter((s) => !eligible.includes(s)).length,
       noPrevious: eligible.filter((s) => s.deltaScore === null).length,
     };

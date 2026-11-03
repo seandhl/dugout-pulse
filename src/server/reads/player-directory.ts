@@ -23,20 +23,37 @@ export function selectDirectory(
 ): DirectoryResult {
   let windows = aggregates.get(f);
   if (!windows) aggregates.set(f, (windows = new Map()));
-  let cached = windows.get(query.window);
+  const cacheKey = JSON.stringify([
+    query.season,
+    f.competition,
+    query.team,
+    query.window,
+  ]);
+  let cached = windows.get(cacheKey);
   if (!cached || cached.scores !== scores) {
     type Appearance = Fixture["games"][number]["batting"][number] & {
       date: string;
       gameId: string;
+      order: number;
     };
     const byPlayer = new Map<string, Appearance[]>();
     for (const g of f.games) {
-      if (g.status !== "final") continue;
+      if (
+        g.status !== "final" ||
+        String(f.season) !== query.season ||
+        f.competition !== "regular"
+      )
+        continue;
       for (const l of [...g.batting, ...g.pitching]) {
         const key = `${l.playerId}/${l.role ? "pitching" : "batting"}`;
         let rows = byPlayer.get(key);
         if (!rows) byPlayer.set(key, (rows = []));
-        rows.push({ ...l, date: g.date, gameId: g.gameId });
+        rows.push({
+          ...l,
+          date: g.date,
+          gameId: g.gameId,
+          order: g.doubleheaderNo,
+        });
       }
     }
     const scoreByPlayer = new Map(scores.map((s) => [s.playerId, s]));
@@ -48,9 +65,17 @@ export function selectDirectory(
         ) ?? []
       ).sort(
         (a, b) =>
-          b.date.localeCompare(a.date) || b.gameId.localeCompare(a.gameId),
+          b.date.localeCompare(a.date) ||
+          b.order - a.order ||
+          b.gameId.localeCompare(a.gameId),
       );
-      const recent = appearances.slice(0, Number(query.window));
+      const scoped = appearances.filter(
+        (l) =>
+          (!query.team || l.teamId === query.team) &&
+          (role === "hitter" ||
+            l.role === (role === "starter" ? "STARTER" : "RELIEVER")),
+      );
+      const recent = scoped.slice(0, Number(query.window));
       const outs = recent.reduce((n, l) => n + l.outsRecorded, 0);
       const score = scoreByPlayer.get(p.playerId);
       return {
@@ -66,20 +91,30 @@ export function selectDirectory(
             : null,
         score: score?.score ?? null,
         confidence: score?.confidence ?? null,
-        lastAppearance: appearances[0]?.date ?? null,
+        lastAppearance: scoped[0]?.date ?? null,
         source: p.sourceId,
+        registration: {
+          status: "unknown" as const,
+          snapshotId: null,
+          asOf: null,
+          sourceId: null,
+        },
       };
     });
     cached = { scores, rows };
-    windows.set(query.window, cached);
+    windows.set(cacheKey, cached);
   }
   const players = cached.rows.filter(
     (p) =>
       (!query.q ||
         p.name.normalize("NFC").includes(query.q.normalize("NFC"))) &&
       (!query.role || p.role === query.role) &&
-      (!query.team || p.teams.includes(query.team)) &&
-      p.teams.length > 0,
+      // games is already team/role scoped; season membership alone is insufficient.
+      p.games > 0 &&
+      (!query.sample ||
+        (query.sample === "complete" && p.games === Number(query.window)) ||
+        (query.sample === "short" && p.games < Number(query.window)) ||
+        (query.sample === "unscored" && p.score === null)),
   );
   players.sort((a, b) => {
     if (query.sort !== "name") {
@@ -96,6 +131,8 @@ export function selectDirectory(
   const pages = Math.max(1, Math.ceil(players.length / 20));
   const page = Math.min(Number(query.page), pages);
   return {
+    teams: f.teams,
+    playerCount: f.players.length,
     players: players.slice((page - 1) * 20, page * 20),
     total: players.length,
     page,

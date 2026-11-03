@@ -5,11 +5,12 @@ export const directoryQuery = z
     season: z.enum(["2026"]).default("2026"),
     team: z
       .string()
-      .regex(/^(sample_[0-9])?$/)
+      .regex(/^(sample_[0-9]|demo_[a-z0-9_]{1,80})?$/)
       .default(""),
     role: z.enum(["", "hitter", "starter", "reliever"]).default(""),
     membership: z.literal("appeared").default("appeared"),
     window: z.enum(["3", "5", "10", "20"]).default("10"),
+    sample: z.enum(["", "complete", "short", "unscored"]).default(""),
     sort: z.enum(["name", "games", "ops", "era", "score"]).default("name"),
     page: z
       .string()
@@ -30,8 +31,16 @@ export type DirectoryPlayer = {
   confidence: string | null;
   lastAppearance: string | null;
   source: string;
+  registration: {
+    status: "unknown";
+    snapshotId: null;
+    asOf: null;
+    sourceId: null;
+  };
 };
 export type DirectoryResult = {
+  playerCount?: number;
+  teams?: { teamId: string; name: string }[];
   players: DirectoryPlayer[];
   total: number;
   page: number;
@@ -43,6 +52,8 @@ export type DirectoryResult = {
 };
 
 export const directoryResponse: z.ZodType<DirectoryResult> = z.object({
+  playerCount: z.number().int().nonnegative().optional(),
+  teams: z.array(z.object({ teamId: z.string(), name: z.string() })).optional(),
   players: z.array(
     z.object({
       id: z.string(),
@@ -56,6 +67,12 @@ export const directoryResponse: z.ZodType<DirectoryResult> = z.object({
       confidence: z.string().nullable(),
       lastAppearance: z.string().nullable(),
       source: z.string(),
+      registration: z.object({
+        status: z.literal("unknown"),
+        snapshotId: z.null(),
+        asOf: z.null(),
+        sourceId: z.null(),
+      }),
     }),
   ),
   total: z.number().int().nonnegative(),

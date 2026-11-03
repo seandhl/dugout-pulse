@@ -4,22 +4,29 @@ import type { Fixture } from "@/demo/generator";
 import { selectPlayerDetail } from "./player-detail";
 import { selectPitcherDetail } from "./pitcher-detail";
 import { formatMetric, type Metric } from "@/stats/batting";
-export const compareQuery = z.object({
-  players: z
-    .string()
-    .max(201)
-    .regex(/^[a-zA-Z0-9_,-]*$/)
-    .default(""),
-  window: z.enum(["5", "10", "season"]).default("10"),
-  season: z.coerce.number().int().optional(),
-  competition: z.enum(["regular", "postseason"]).default("regular"),
-  q: z.string().trim().max(100).default(""),
-  role1: z.enum(["batter", "starter", "reliever"]).optional(),
-  role2: z.enum(["batter", "starter", "reliever"]).optional(),
-});
+export const compareQuery = z
+  .object({
+    players: z
+      .string()
+      .max(201)
+      .regex(/^[a-zA-Z0-9_,-]*$/)
+      .default("")
+      .refine(
+        (value) => value.split(",").length <= 2,
+        "비교는 최대 2명까지 가능합니다. 선수 ID를 2개 이하로 줄여 주세요.",
+      ),
+    window: z.enum(["5", "10", "season"]).default("10"),
+    season: z.coerce.number().int().optional(),
+    competition: z.enum(["regular", "postseason"]).default("regular"),
+    q: z.string().trim().max(100).default(""),
+    role1: z.enum(["batter", "starter", "reliever"]).optional(),
+    role2: z.enum(["batter", "starter", "reliever"]).optional(),
+  })
+  .strict();
 export type CompareQuery = z.infer<typeof compareQuery>;
 export function selectComparison(f: Fixture, q: CompareQuery) {
-  const ids = q.players.split(",").slice(0, 2);
+  q = compareQuery.parse(q);
+  const ids = q.players.split(",");
   const available =
     (q.season ?? f.season) === f.season && q.competition === "regular";
   const slots = ids.map((id, i) => {
@@ -96,6 +103,7 @@ export function selectComparison(f: Fixture, q: CompareQuery) {
     comparable:
       slots.length === 2 &&
       ids[0] !== ids[1] &&
+      new Set(slots.flatMap((s) => (s ? [s.d.asOf] : []))).size <= 1 &&
       slots.every(Boolean) &&
       slots[0]!.role === slots[1]!.role,
     asOfMismatch: new Set(slots.flatMap((s) => (s ? [s.d.asOf] : []))).size > 1,

@@ -1,4 +1,5 @@
 import "server-only";
+import { movingBasis } from "./comparison-basis";
 import { z } from "zod";
 import type { Fixture } from "@/demo/generator";
 import { battingStats } from "@/stats/batting";
@@ -91,6 +92,7 @@ export function selectPlayerDetail(f: Fixture, id: string, window: string) {
       exportAllowed: true,
       licenseId: "demo-self-authored-v1",
     },
+    comparisonBasis: movingBasis(f, "hitter", window, own),
     modelVersion: MODEL,
     window,
     lastAppearance: own.at(-1)?.playedOn ?? null,

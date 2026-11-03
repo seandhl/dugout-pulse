@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 const port = Number(process.env.PLAYWRIGHT_PORT ?? 3100);
+// Blank environment templates must select the same local target as webServer.
+const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL?.trim() || undefined;
 export default defineConfig({
   testDir: "./tests/e2e",
   testIgnore: "ingest.spec.ts",
@@ -9,10 +11,10 @@ export default defineConfig({
   use: {
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
-    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${port}`,
+    baseURL: externalBaseURL ?? `http://127.0.0.1:${port}`,
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
-  webServer: process.env.PLAYWRIGHT_BASE_URL
+  webServer: externalBaseURL
     ? undefined
     : {
         command:

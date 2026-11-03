@@ -46,3 +46,26 @@ CI는 frozen-lockfile 설치 → lint → 전체 typecheck → unit/integration 
 - 실제 SQL 적용 및 원격 CI 실행 결과는 미확인. 완료 수락은 일회용 PostgreSQL에서 전체 `pnpm verify` 또는 CI 성공 후 가능하다.
 
 기계 판독 가능한 실행 기록: `reports/test-validation.json`. Next의 streaming not-found는 HTTP 200과 noindex/404 UI를 사용하므로 API의 404와 구분해 검증한다. 비교 링크 선택 후 새 화면이 반영된 것을 확인한 뒤 기간을 제출하여 이전 폼을 사용하는 경합을 방지한다.
+
+## Verify URL 회귀 수정 (2026-11-03)
+
+실패 증빙: https://github.com/seandhl/dugout-pulse/actions/runs/41642216977 (commit `1ae00bd939e83de14b5ca98eda76473ce6ec30fb`, job `125938323740`). 로그상 lint/typecheck, 235개 단위·통합 테스트, 2개 PostgreSQL migration, production build는 통과했다. public E2E 32개는 `apiRequestContext.get: Invalid URL` 또는 `page.goto: Cannot navigate to invalid URL`로 실패했고 admin 단계는 실행되지 않았다. PostgreSQL healthy 및 Chromium/SQL client 설치 성공도 확인했다.
+
+원인: `verify.mjs`가 `PLAYWRIGHT_BASE_URL=""`를 주입했고 config의 `??`는 빈 문자열을 fallback하지 않았다. webServer 조건은 빈 값을 false로 처리하므로 로컬 서버를 실행하면서 요청 baseURL만 비는 불일치가 생겼다. DB·브라우저 설치 실패라는 추정은 해당 로그와 맞지 않는다.
+
+수정: 전체 verify는 상속된 `PLAYWRIGHT_BASE_URL` 키를 제거하여 항상 자체 로컬 서버를 검증한다. 단독 E2E config는 trim 후 비어 있는 값을 미설정으로 처리하며, 같은 값으로 baseURL과 서버 소유 여부를 결정한다. 명시적 URL을 지정한 단독 E2E는 기존 외부 대상 동작을 보존한다. `tests/unit/verify-config.test.ts`는 미설정/빈 값/공백/명시 URL, production 서버와 요청 URL 일치, 전체 게이트 순서, 실패 즉시 중단 및 외부 URL 제거를 검증한다. orchestration 테스트의 자식 명령만 stub이며 실제 앱 검증을 대체하지 않는다.
+
+서비스 수명은 기존 Playwright webServer에 맡긴다: seed 성공 후 start, HTTP 준비 확인 후 테스트, 기존 서버 재사용 금지, 종료 시 정리. admin은 별도 포트와 별도 build 디렉터리/dev 서버 및 실행별 임시 인증을 유지한다. workflow의 PostgreSQL 서비스 healthcheck, TEST_DATABASE_URL, Chromium 설치, 실패 artifact 업로드는 유지한다. SQL은 일회용 DB 내 고유 스키마만 생성/정리한다. 데이터 계약·modelVersion·provenance·DEMO/REAL 분리 및 공개 API는 변경하지 않는다.
+
+로컬 전체 `pnpm verify`는 lint/typecheck 및 241 테스트 통과(기존 선택 성능 테스트 1 skip), 대상 5파일 coverage 100% 후 TEST_DATABASE_URL 부재로 migration에서 exit 1이다. psql/PostgreSQL/Docker가 없으므로 로컬 SQL 검증은 미실행이며 이를 전체 성공으로 간주하지 않는다. 별도 E2E/빌드와 수정 후 원격 CI 결과는 후속 실행 기록에 남긴다.
+
+### 수정 후 최종 검증
+
+- 코드 커밋 `465e42dc3d145455f51d11494675642c89f022ae`, feature 브랜치 `codex/fix-verify-ci`.
+- 원격 **전체 성공**: https://github.com/seandhl/dugout-pulse/actions/runs/41643906004 , job `125944095633`. lint → typecheck → 26파일/241 테스트 통과(기존 선택 성능 벤치마크 1 skip) 및 핵심 5파일 named-function coverage 각 100% → PostgreSQL 17.6 migration 2개 → production build → public E2E 32/32 → admin E2E 3/3 → `PASS: all verification stages`. artifact 업로드와 서비스 컨테이너 종료도 성공했다. 이 기록은 실제 로그를 조회한 결과다.
+- 사용자 승인 후 Homebrew `postgresql@17` 설치. 기존 운영 DB 대신 `mktemp`로 만든 별도 디렉터리, loopback 포트 55439, fixture 전용 DB를 사용했다. `pg_ctl -w start`로 준비를 기다리고, shell EXIT trap에서 `pg_ctl -m fast -w stop`으로 종료를 확인했다. 로그인 시 자동 시작 서비스는 등록하지 않았다.
+- 로컬 **전체 성공**: PostgreSQL bin 경로를 PATH에 추가하고 `TEST_DATABASE_URL=postgresql://fixture@127.0.0.1:55439/fixture PLAYWRIGHT_BASE_URL=https://example.invalid pnpm verify` 실행, exit 0 / `PASS: all verification stages`. 외부 URL을 의도적으로 상속해도 검증 runner가 제거하여 로컬 서버에서 public 32/32 및 admin 3/3을 통과했다. 단위·커버리지·SQL·lint·typecheck·build 결과도 원격과 동일하다. 임시 DB는 종료됐다.
+- 별도 빈 URL 재현 명령 `CI=1 VERIFY_PRODUCTION=1 PLAYWRIGHT_BASE_URL='' pnpm test:e2e`도 순차 실행에서 32/32 통과했다. 최초 로컬 병렬 실행은 public/admin의 공용 test-results 경로와 동시에 실행한 build가 간섭하여 실패했다(ENOENT trace 및 모바일 홈 timeout). 해당 실패를 성공으로 세지 않고, 다른 실행 종료 후 순차 E2E와 전체 verify로 재검증했다. E2E 두 명령은 동시에 실행하지 않는다.
+- 화면 확인: `pnpm exec playwright show-report`; 개발 화면은 `pnpm dev` 후 http://127.0.0.1:3000 에서 한국어 DEMO 배너와 탐색을 확인한다. 이번 수정은 화면·데이터 모델 변경이 아니다.
+- 되돌리기: feature 브랜치에서 `git revert 465e42dc3d145455f51d11494675642c89f022ae` 후 전체 verify를 실행한다. 이는 기존 빈 URL 결함도 복원하므로 권장하지 않는다. DB 마이그레이션/운영 데이터 rollback은 필요 없다.
+- 다음 조건: 리뷰 후 main 병합 여부를 결정한다. main push·병합·자동 배포는 수행하지 않았다. 이 CI 성공은 실제 데이터 권리 승인이나 공개 출시 게이트 해제를 의미하지 않는다. Prisma drift 검사는 기존과 같이 포함하지 않으며, 필수 테스트의 새로운 skip은 없다.

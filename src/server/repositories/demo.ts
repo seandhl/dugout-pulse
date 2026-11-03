@@ -1,4 +1,5 @@
 import "server-only";
+import { publicationIdentity } from "./publication";
 import { readDemo } from "../db/demo";
 import { playerSchema, type PlayersQuery } from "../../contracts/api";
 import type { PlayerRepository } from "../ports/players";
@@ -24,6 +25,7 @@ export const demoRepository: PlayerRepository = {
       asOf: fixture.asOf,
       lastUpdatedAt: fixture.lastUpdatedAt,
       releaseId: fixture.releaseId,
+      revision: publicationIdentity().revision,
     };
   },
   async list(query: PlayersQuery, after) {

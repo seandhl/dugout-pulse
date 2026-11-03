@@ -99,6 +99,8 @@ export const schemas = {
       ...identity,
       game_id: id,
       team_id: id,
+      r: count.optional(),
+      rbi: count.optional(),
       pa: count,
       ab: count,
       h: count,

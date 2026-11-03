@@ -35,7 +35,33 @@ it("preserves indexed directory results and all board provenance on a determinis
     );
   }
   const bq = boardQuery.parse({ date: "2026-11-03" });
-  expect(selectRankingBoards(state, bq)).toEqual(baselineRankings(state, bq));
+  const actual = selectRankingBoards(state, bq);
+  const baseline = baselineRankings(state, bq);
+  // This integer-score panel preserves ordering/provenance; ADR-030 changes ranks.
+  expect({
+    ...actual,
+    boards: actual.boards.map(
+      ({ excludedRows, ...board }) => (
+        void excludedRows,
+        {
+          ...board,
+          rows: board.rows.map(
+            ({ rank, comparisonBasis, ...row }) => (
+              void rank,
+              void comparisonBasis,
+              row
+            ),
+          ),
+        }
+      ),
+    ),
+  }).toEqual({
+    ...baseline,
+    boards: baseline.boards.map((board) => ({
+      ...board,
+      rows: board.rows.map(({ rank, ...row }) => (void rank, row)),
+    })),
+  });
   const first = momentumView(state, {
     season: 2026,
     competition: "regular",
@@ -51,7 +77,14 @@ it("preserves indexed directory results and all board provenance on a determinis
     page: 2,
   });
   expect(first.data).toHaveLength(20);
-  expect(second.data[0]).toMatchObject({ rank: 21 });
+  const score = second.data[0].score!;
+  expect(second.data[0]).toMatchObject({
+    rank:
+      1 +
+      Object.values(state.momentumSnapshots!).filter(
+        (s) => s.role === "hitter" && s.score! > score,
+      ).length,
+  });
   expect(new Set([...first.data, ...second.data].map((s) => s.id)).size).toBe(
     40,
   );
@@ -81,11 +114,15 @@ it("batched recompute yields the event loop and preserves atomic computation res
   const asyncState = structuredClone(state);
   publishMomentum(sync, "2026-11-03T00:00:00Z");
   let ticks = 0;
-  const timer = setInterval(() => ticks++, 0);
+  // Match the check-phase yield rather than relying on timer millisecond rounding.
+  let probe = setImmediate(function tick() {
+    ticks++;
+    probe = setImmediate(tick);
+  });
   try {
     await publishMomentumBatched(asyncState, "2026-11-03T00:00:00Z");
   } finally {
-    clearInterval(timer);
+    clearImmediate(probe);
   }
   expect(ticks).toBeGreaterThan(0);
   expect(asyncState).toEqual(sync);

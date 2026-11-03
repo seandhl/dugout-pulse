@@ -1,7 +1,9 @@
 "use client";
+import { releaseFetch } from "@/components/release-provider";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import Link from "@/components/release-provider";
+import { useReleaseRouter } from "@/components/release-provider";
+import { useSearchParams } from "next/navigation";
 import { Tabs } from "radix-ui";
 import type { PitcherDetail } from "@/server/reads/pitcher-detail";
 import { formatMetric } from "@/stats/batting";
@@ -22,7 +24,8 @@ export function PitcherDetailView({
   id: string;
   defaultRole: "starter" | "reliever";
 }) {
-  const params = useSearchParams();
+  const params = new URLSearchParams(useSearchParams());
+  params.delete("releaseId");
   const role = params.get("role") ?? defaultRole;
   const window = params.get("window") ?? (role === "starter" ? "5" : "10");
   return (
@@ -38,13 +41,13 @@ function PitcherContent({
   role: string;
   window: string;
 }) {
-  const router = useRouter();
+  const router = useReleaseRouter();
   const [data, setData] = useState<PitcherDetail | null>(null);
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    fetch(
+    releaseFetch(
       `/api/v1/players/${encodeURIComponent(id)}/pitching?role=${encodeURIComponent(role)}&window=${encodeURIComponent(window)}`,
       { signal: controller.signal, cache: "no-store" },
     )
@@ -133,7 +136,17 @@ function PitcherContent({
             </Tabs.Trigger>
           ))}
         </Tabs.List>
+        <p className="metric-na">
+          {role === "starter" ? "최근 20등판" : "최근 3등판"} N/A · 상세 API
+          미지원
+        </p>
         <Tabs.Content value={window}>
+          <p className="ds-notice">
+            선택 창 {window === "season" ? "시즌 전체" : `최근 ${window}출전`} ·
+            실제 표본 {d.recent.sample.appearances}출전 · 데이터 기준일 {d.asOf}
+            . 아래 통계 추이의 이동 창은 최대 5출전으로 고정되며 기세 점수
+            추이가 아닙니다.
+          </p>
           <section className="panel">
             <h2>선택 {label} 기록</h2>
             <p>{summary(d.recent)}</p>

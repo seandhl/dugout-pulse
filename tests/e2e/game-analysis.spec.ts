@@ -120,3 +120,25 @@ test("period selection announces loading before new results", async ({
     page.getByRole("region", { name: "경기 분석", exact: true }),
   ).toBeVisible();
 });
+
+test("timeline exposes fixture scope, formula, missing dates and an equivalent table", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("/players/demo_0_00?window=20");
+  const region = page.getByRole("region", { name: "경기 분석", exact: true });
+  await expect(region.getByText("DEMO · 자체 제작 fixture")).toBeVisible();
+  await expect(region.getByText(/2026 정규시즌 · 데이터 기준일/)).toBeVisible();
+  await expect(region.getByText(/AVG = H\/AB/)).toBeVisible();
+  await expect(
+    region.getByText(/X축 간격은 달력 일수가 아닌 출전 순서/),
+  ).toBeVisible();
+  await expect(
+    region.getByRole("columnheader", { name: "직전 출전 이후 기록 공백" }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});

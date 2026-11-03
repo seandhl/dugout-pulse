@@ -1,5 +1,20 @@
 "use client";
 import { useId, useState } from "react";
+import { gameTimeline } from "@/ui/game-timeline";
+const definitions: Record<string, string> = {
+  avg: "AVG = H/AB",
+  obp: "OBP = (H+BB+HBP)/(AB+BB+HBP+SF)",
+  slg: "SLG = 총루타/AB",
+  ops: "OPS = OBP+SLG",
+  iso: "ISO = SLG−AVG",
+  kPct: "K% = SO/PA (타자), SO/BF (투수)",
+  bbPct: "BB% = BB/PA (타자), BB/BF (투수)",
+  era: "ERA = 27×ER/아웃",
+  whip: "WHIP = 3×(H+BB)/아웃",
+  kPer9: "K/9 = 27×SO/아웃",
+  bbPer9: "BB/9 = 27×BB/아웃",
+  kMinusBbPct: "K-BB% = (SO−BB)/BF",
+};
 
 type Value = { value: number | null; unit?: string; reason?: string | null };
 type Stats = { metrics: Record<string, Value> };
@@ -77,7 +92,9 @@ export function GameAnalysis({
     kind === "batting"
       ? ["pa", "ab", "h", "doubles", "triples", "hr", "bb", "hbp", "sf", "so"]
       : ["bf", "outsRecorded", "h", "r", "er", "bb", "so", "hr", "pitches"];
-  const rows = games.filter(
+  const timeline = gameTimeline(games);
+  const positions = new Map(timeline.map((g, i) => [g.id, i]));
+  const rows = timeline.filter(
     (g) =>
       (!opponent || g.opponent === opponent) &&
       (!from || g.date >= from) &&
@@ -92,7 +109,9 @@ export function GameAnalysis({
   // Geometry only: all statistical values arrive from the server engine.
   const min = Math.min(0, ...values),
     max = Math.max(1, ...values);
-  const x = (i: number) => 55 + (i * 520) / Math.max(1, rows.length - 1);
+  const chartWidth = Math.max(640, rows.length * 48 + 110);
+  const x = (i: number) =>
+    55 + (i * (chartWidth - 120)) / Math.max(1, rows.length - 1);
   const y = (v: number) => 175 - ((v - min) / (max - min)) * 145;
   const active = rows.find((g) => g.id === hovered);
   const focusRow = (g: Game) => {
@@ -167,6 +186,32 @@ export function GameAnalysis({
   return (
     <section className="panel game-analysis" aria-label="경기 분석">
       <h2>경기별 누적·이동 추이와 상세 로그</h2>
+      {exportPolicy.demo && (
+        <span className="badge">DEMO · 자체 제작 fixture</span>
+      )}
+      <p>
+        {season}{" "}
+        {competition === "regular"
+          ? "정규시즌"
+          : competition === "postseason"
+            ? "포스트시즌"
+            : competition}{" "}
+        · 데이터 기준일 (asOf) {asOf} · 출처{" "}
+        {Array.from(new Set(games.map((g) => g.source))).join(", ") || "N/A"}
+      </p>
+      <p>
+        {definitions[metric]} · 원시 기록의 분자·분모 합산 후 계산하며 경기별
+        비율을 평균하지 않습니다. %는 비율×100입니다.
+      </p>
+      <p>
+        출전 사이 기록 없는 날짜:{" "}
+        {timeline
+          .filter((g) => (g.gapDays ?? 0) > 0)
+          .map((g) => `${g.date} 직전 ${g.gapDays}일`)
+          .join(" · ") || "없음"}
+        . 팀 경기 일정·결장 사유는 미확인입니다. X축 간격은 달력 일수가 아닌
+        출전 순서입니다.
+      </p>
       <div className="analysis-controls">
         <label>
           차트 지표{" "}
@@ -233,8 +278,8 @@ export function GameAnalysis({
       </p>
       <p>
         초기 이동 구간은 1–4출전입니다. 적은 PA/BF/outs에서는 변동이 큽니다.
-        N/A는 결측·분모 0이며 선을 연결하지 않습니다. 휴식·결장 사유는
-        미확인입니다.
+        N/A는 결측·분모 0이며 선을 연결하지 않습니다. 기록 공백과 필터로 숨긴
+        경기 사이도 연결하지 않습니다. 휴식·결장 사유는 미확인입니다.
       </p>
       <p role="status">
         표시 {rows.length}경기 / 선택 기간 {games.length}경기
@@ -248,93 +293,128 @@ export function GameAnalysis({
           기록은 표에서 확인하세요.
         </p>
       ) : (
-        <svg
-          viewBox="0 0 640 220"
-          className="analysis-chart"
-          role="group"
-          aria-label={`${labels[metric]} 경기별 추이. 각 점에서 Enter로 상세 행 이동`}
+        <div
+          className="analysis-chart-scroll"
+          role="region"
+          aria-label="경기별 추이 가로 스크롤 영역"
+          // Scrollable chart must be keyboard reachable.
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={0}
         >
-          <path d="M55 25V175H590" fill="none" stroke="currentColor" />
-          <text x="0" y="25">
-            {display({
-              value: max,
-              unit: rows[0]?.stats.metrics[metric]?.unit,
-            })}
-          </text>
-          <text x="0" y="175">
-            {display({
-              value: min,
-              unit: rows[0]?.stats.metrics[metric]?.unit,
-            })}
-          </text>
-          {(["cumulative", "moving", "stats"] as const).map((series, si) => (
-            <g
-              key={series}
-              fill={si === 0 ? "var(--accent)" : "currentColor"}
-              stroke={si === 0 ? "var(--accent)" : "currentColor"}
-            >
-              {rows.map((g, i) => {
-                const v = finite(g[series].metrics[metric]),
-                  prev =
-                    i > 0 ? finite(rows[i - 1][series].metrics[metric]) : null;
-                if (v === null) return null;
-                return (
-                  <g key={g.id}>
-                    {si < 2 && prev !== null && (
-                      <line
-                        x1={x(i - 1)}
-                        y1={y(prev)}
-                        x2={x(i)}
-                        y2={y(v)}
-                        strokeWidth="2"
-                        strokeDasharray={si === 1 ? "5 4" : undefined}
-                      />
-                    )}
-                    <g
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`${g.date} DH ${g.order} ${g.opponent} ${["누적", "이동", "경기"][si]} ${display(g[series].metrics[metric])} 상세 행 이동`}
-                      onClick={() => focusRow(g)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          focusRow(g);
-                        }
-                      }}
-                      onFocus={() => setHovered(g.id)}
-                      onBlur={() => setHovered(null)}
-                      onMouseEnter={() => setHovered(g.id)}
-                      onMouseLeave={() => setHovered(null)}
-                    >
-                      <title>{tooltip(g)}</title>
-                      <circle
-                        cx={x(i)}
-                        cy={y(v)}
-                        r="10"
-                        fill="transparent"
-                        stroke="none"
-                      />
-                      {si === 0 ? (
-                        <circle cx={x(i)} cy={y(v)} r="4" />
-                      ) : si === 1 ? (
-                        <rect x={x(i) - 4} y={y(v) - 4} width="8" height="8" />
-                      ) : (
-                        <path d={`M${x(i)} ${y(v) - 5}l5 9h-10z`} />
-                      )}
-                    </g>
-                  </g>
-                );
+          <p className="scroll-hint">
+            차트는 가로로 밀거나 영역에 포커스한 뒤 ← → 키로 볼 수 있습니다.
+          </p>
+          <svg
+            viewBox={`0 0 ${chartWidth} 220`}
+            style={{ minWidth: chartWidth }}
+            className="analysis-chart"
+            role="group"
+            aria-label={`${labels[metric]} 경기별 추이. 각 점에서 Enter로 상세 행 이동`}
+          >
+            <path
+              d={`M55 25V175H${chartWidth - 50}`}
+              fill="none"
+              stroke="currentColor"
+            />
+            <text x="0" y="25">
+              {display({
+                value: max,
+                unit: rows[0]?.stats.metrics[metric]?.unit,
               })}
-            </g>
-          ))}
-          {[
-            ...new Set([0, Math.floor((rows.length - 1) / 2), rows.length - 1]),
-          ].map((i) => (
-            <text key={i} x={x(i)} y="204" textAnchor="middle">
-              {rows[i].date.slice(5)} / DH{rows[i].order}
             </text>
-          ))}
-        </svg>
+            <text x="0" y="175">
+              {display({
+                value: min,
+                unit: rows[0]?.stats.metrics[metric]?.unit,
+              })}
+            </text>
+            {(["cumulative", "moving", "stats"] as const).map((series, si) => (
+              <g
+                key={series}
+                fill={
+                  si === 0 ? "var(--chart-primary)" : "var(--chart-secondary)"
+                }
+                stroke={
+                  si === 0 ? "var(--chart-primary)" : "var(--chart-secondary)"
+                }
+              >
+                {rows.map((g, i) => {
+                  const v = finite(g[series].metrics[metric]),
+                    prev =
+                      i > 0 &&
+                      positions.get(g.id) ===
+                        positions.get(rows[i - 1].id)! + 1 &&
+                      g.gapDays === 0
+                        ? finite(rows[i - 1][series].metrics[metric])
+                        : null;
+                  if (v === null) return null;
+                  return (
+                    <g key={g.id}>
+                      {si < 2 && prev !== null && (
+                        <line
+                          x1={x(i - 1)}
+                          y1={y(prev)}
+                          x2={x(i)}
+                          y2={y(v)}
+                          strokeWidth="2"
+                          strokeDasharray={si === 1 ? "5 4" : undefined}
+                        />
+                      )}
+                      <g
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`${g.date} DH ${g.order} ${g.opponent} ${["누적", "이동", "경기"][si]} ${display(g[series].metrics[metric])} 상세 행 이동`}
+                        onClick={() => focusRow(g)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            focusRow(g);
+                          }
+                        }}
+                        onFocus={() => setHovered(g.id)}
+                        onBlur={() => setHovered(null)}
+                        onMouseEnter={() => setHovered(g.id)}
+                        onMouseLeave={() => setHovered(null)}
+                      >
+                        <title>{tooltip(g)}</title>
+                        <circle
+                          cx={x(i)}
+                          cy={y(v)}
+                          r="23"
+                          fill="transparent"
+                          stroke="none"
+                        />
+                        {si === 0 ? (
+                          <circle cx={x(i)} cy={y(v)} r="4" />
+                        ) : si === 1 ? (
+                          <rect
+                            x={x(i) - 4}
+                            y={y(v) - 4}
+                            width="8"
+                            height="8"
+                          />
+                        ) : (
+                          <path d={`M${x(i)} ${y(v) - 5}l5 9h-10z`} />
+                        )}
+                      </g>
+                    </g>
+                  );
+                })}
+              </g>
+            ))}
+            {[
+              ...new Set([
+                0,
+                Math.floor((rows.length - 1) / 2),
+                rows.length - 1,
+              ]),
+            ].map((i) => (
+              <text key={i} x={x(i)} y="204" textAnchor="middle">
+                {rows[i].date.slice(5)} / DH{rows[i].order}
+              </text>
+            ))}
+          </svg>
+        </div>
       )}
       <div className="analysis-tooltip" role="status" aria-live="polite">
         {active
@@ -368,6 +448,7 @@ export function GameAnalysis({
             <tr>
               {[
                 "날짜 / DH",
+                "직전 출전 이후 기록 공백",
                 "상대팀",
                 ...(kind === "pitching"
                   ? ["역할", "IP", "결과 (개인 W/L)"]
@@ -398,6 +479,13 @@ export function GameAnalysis({
                   {g.date} / DH {g.order}
                   {selected === g.id && <span> · 선택됨</span>}
                 </th>
+                <td>
+                  {g.gapDays === null ? (
+                    <span className="metric-na">N/A · 선택 창 첫 출전</span>
+                  ) : (
+                    `${g.gapDays}일`
+                  )}
+                </td>
                 <td>{g.opponent}</td>
                 {kind === "pitching" && (
                   <>
@@ -410,7 +498,16 @@ export function GameAnalysis({
                   <td key={k}>{g.counts[k] ?? "N/A"}</td>
                 ))}
                 {keys.map((k) => (
-                  <td key={k}>{display(g.stats.metrics[k])}</td>
+                  <td
+                    key={k}
+                    className={
+                      finite(g.stats.metrics[k]) === null
+                        ? "metric-na"
+                        : undefined
+                    }
+                  >
+                    {display(g.stats.metrics[k])}
+                  </td>
                 ))}
                 <td>{display(g.cumulative.metrics[metric])}</td>
                 <td>{display(g.moving.metrics[metric])}</td>

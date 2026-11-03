@@ -13,7 +13,13 @@ test("rankings makes missing snapshots explicit and preserves filter URLs", asyn
     await expect(
       page.getByRole("heading", { name: `${role} 보드` }),
     ).toBeVisible();
+  await expect(page.getByText(/반올림 전 원값으로 정렬/)).toBeVisible();
   await page.getByRole("link", { name: "하락 변화", exact: true }).click();
+  const response = await page.request.get(
+    "/api/v1/rankings?role=hitter&window=10&date=1900-01-01&sort=decline&page=1",
+  );
+  expect(response.ok()).toBe(true);
+  expect((await response.json()).data).toEqual([]);
   await expect(page).toHaveURL(/date=1900-01-01.*sort=decline/);
   await page.getByLabel("기간 N").selectOption("5");
   await page.getByRole("button", { name: "조건 적용" }).click();

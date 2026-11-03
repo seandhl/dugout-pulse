@@ -68,6 +68,7 @@ test("authorized sample upload shows report and stays unpublished", async ({
 test("sample upload requires explicit admin publish and correction changes aggregate without duplicates", async ({
   page,
 }) => {
+  test.setTimeout(180000);
   const token = process.env.TEST_INGEST_ADMIN_TOKEN;
   test.skip(!token, "전용 ingest E2E 실행 필요");
   const { rm } = await import("node:fs/promises");
@@ -136,15 +137,73 @@ test("sample upload requires explicit admin publish and correction changes aggre
     await publish(first.importBatchId);
     for (const kind of ["games", "rosters", "batting_game_logs"])
       await publish((await upload(kind)).importBatchId);
-    const before = await (await page.request.get("/api/v1/published")).json();
+    async function publicGet(path: string, releaseId?: string) {
+      const response = await page.request.get(path, {
+        headers: releaseId ? { "X-Pulse-Release": releaseId } : {},
+      });
+      expect(response.status(), await response.text()).toBe(200);
+      expect(response.headers()["cache-control"]).toBe("no-store");
+      expect(response.headers()["etag"]).toMatch(/^"[a-f0-9]{64}"$/);
+      return response;
+    }
+    async function allPublicAPIs(expectedHits: number, releaseId?: string) {
+      const published = await publicGet("/api/v1/published", releaseId);
+      const identity = published.headers()["x-pulse-release"];
+      const revision = published.headers()["x-pulse-revision"];
+      const asOf = published.headers()["x-pulse-as-of"];
+      const body = await published.json();
+      expect(
+        Object.values(body.aggregates).map((v) => (v as { h: number }).h),
+      ).toEqual([expectedHits]);
+      for (const path of [
+        "meta",
+        "players",
+        "home",
+        "player-directory",
+        "players/demo_player_1",
+        "players/demo_player_1/batting",
+        "players/demo_player_2/pitching?role=starter&window=5",
+        "players/demo_player_1/momentum?role=hitter",
+        "rankings?role=hitter",
+        "scope?season=2026&date=2026-10-31",
+      ]) {
+        const response = await publicGet(`/api/v1/${path}`, identity);
+        expect(response.headers()["x-pulse-release"], path).toBe(identity);
+        expect(response.headers()["x-pulse-revision"], path).toBe(revision);
+        expect(response.headers()["x-pulse-as-of"], path).toBe(asOf);
+        const payload = await response.json();
+        expect(JSON.stringify(payload),path).not.toContain("synthetic_v2");
+        if (path === "home") {
+          expect(payload.asOf).toBe(asOf);
+          expect(payload.source).toBe("demo-file-source");
+        }
+        if (path === "meta") {
+          expect(payload.meta.releaseId).toBe(identity);
+          expect(payload.meta.revision).toBe(Number(revision));
+        }
+      }
+      const detail = await (
+        await publicGet("/api/v1/players/demo_player_1/batting", identity)
+      ).json();
+      expect(detail.season.totals.h).toBe(expectedHits);
+      return identity;
+    }
+    const beforeId = await allPublicAPIs(2);
+    const before = await (await publicGet("/api/v1/published")).json();
     expect(
       Object.values(before.aggregates).map((v) => (v as { h: number }).h),
     ).toEqual([2]);
     for (let i = 0; i < 2; i++)
       await publish((await upload("batting_game_logs")).importBatchId);
-    await publish(
-      (await upload("batting_game_logs", "correction")).importBatchId,
-    );
+    const correctionId = (await upload("batting_game_logs", "correction"))
+      .importBatchId;
+    await publish(correctionId);
+    const afterId = await allPublicAPIs(3);
+    expect(afterId).not.toBe(beforeId);
+    await allPublicAPIs(2, beforeId);
+    expect(
+      (await page.request.get("/api/v1/home?releaseId=missing")).status(),
+    ).toBe(503);
     const after = await (await page.request.get("/api/v1/published")).json();
     expect(after.records).toHaveLength(before.records.length);
     expect(
@@ -165,6 +224,43 @@ test("sample upload requires explicit admin publish and correction changes aggre
       ).status(),
     ).toBe(400);
     await expect(page.getByText(/안타 3/)).toBeVisible();
+    for (const path of [
+      "/",
+      "/players",
+      "/players/demo_player_1",
+      "/players/demo_player_2?role=starter&window=5",
+      "/compare?players=demo_player_1,demo_player_2",
+      "/rankings",
+    ]) {
+      const target = new URL(path, "http://127.0.0.1:3101");
+      target.searchParams.set("releaseId", afterId);
+      const response = await page.goto(target.toString());
+      expect(response?.status(), path).toBe(200);
+      await expect(page.locator("body"), path).toHaveAttribute(
+        "data-release-id",
+        afterId,
+      );
+      await expect(page.getByRole("heading", { level: 1 }), path).toHaveCount(
+        1,
+      );
+      await expect(page.locator(".skeleton"), path).toHaveCount(0);
+    }
+    const rollback = await page.request.post("/api/admin/ingest/rollback", {
+      headers: authorization,
+      data: { batchId: correctionId, confirmation: "ROLLBACK DEMO" },
+    });
+    expect(rollback.status(), await rollback.text()).toBe(200);
+    const rollbackId = await allPublicAPIs(2);
+    expect(rollbackId).not.toBe(beforeId);
+    expect(rollbackId).not.toBe(afterId);
+    await allPublicAPIs(3, afterId);
+    // An open page continues to request its pinned release after a rollback.
+    await page.goto(`/?releaseId=${afterId}`);
+    const requestPromise = page.waitForRequest(
+      (r) => r.url().includes("/api/v1/home") && r.url().includes("window=5"),
+    );
+    await page.getByRole("button", { name: "5경기", exact: true }).click();
+    expect((await requestPromise).headers()["x-pulse-release"]).toBe(afterId);
   } finally {
     await rm(".demo/pipeline-e2e", { recursive: true, force: true });
   }

@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import Link from "@/components/release-provider";
 import { Dialog } from "radix-ui";
 export function ScoreHelp() {
   return (
@@ -20,9 +20,11 @@ export function ScoreHelp() {
             서로 다른 모델이므로 역할 사이의 점수를 비교하지 마세요.
           </p>
           <p>
-            기세 변화량은 이전 비교 점수와의 차이입니다. 비교 자료가 없으면
-            미제공으로 표시합니다. 신뢰도는 표본 충족 수준이며 예측 정확도가
-            아닙니다.
+            기세 변화량은 같은 선수·시즌·대회·역할·기간·모델 버전의 이전 순위
+            적격 게시 점수와 현재 점수의 차이입니다. 이전 게시 자료가 없으면
+            비교 불가입니다. 모델 내부의 이동 창 점수차는 최신 출전 하나를
+            제외한 N출전 대비이며 별도 값입니다. 신뢰도는 표본 충족 수준이며
+            예측 정확도가 아닙니다.
           </p>
           <p>
             출처·시즌·대회·기준일·표본은 각 화면에서 확인하세요. 휴식·결장

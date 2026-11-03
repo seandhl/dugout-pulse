@@ -1,4 +1,8 @@
 import "server-only";
+import {
+  assertCanonicalPublication,
+  selectedPublication,
+} from "../repositories/publication";
 import { DatabaseSync } from "node:sqlite";
 import { createHash } from "node:crypto";
 import { statSync } from "node:fs";
@@ -10,6 +14,21 @@ let cached: { signature: string; fixture: Fixture; hash: string } | undefined;
 let canonical: string | undefined;
 let canonicalProfile: string | undefined;
 export function readDemo(): Fixture {
+  assertCanonicalPublication();
+  const release = selectedPublication();
+  if (release) {
+    if (
+      (process.env.DATA_MODE && process.env.DATA_MODE !== "DEMO") ||
+      (process.env.PUBLICATION_STATE &&
+        process.env.PUBLICATION_STATE !== "demo")
+    )
+      throw new ApiError(
+        "DATA_UNAVAILABLE",
+        503,
+        "DEMO 공개가 중단되었습니다.",
+      );
+    return release.fixture;
+  }
   try {
     if (
       process.env.PUBLICATION_STATE &&

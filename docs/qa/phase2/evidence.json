@@ -1,0 +1,1395 @@
+{
+  "baseURL": "http://127.0.0.1:3107",
+  "createdAt": "2026-11-03T14:21:57.766Z",
+  "screens": [
+    {
+      "name": "home",
+      "path": "/",
+      "width": 320,
+      "scrollWidth": 320,
+      "innerWidth": 320,
+      "h1": [
+        "지금, 누가좋은 흐름일까?"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "낮은 신뢰도·산출 불가 선수 확인",
+          "height": 32
+        },
+        {
+          "text": "가상 B-09 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 B-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 C-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 D-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 E-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 F-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 G-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 H-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 I-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 J-10 ↗",
+          "height": 16
+        }
+      ]
+    },
+    {
+      "name": "players",
+      "path": "/players",
+      "width": 320,
+      "scrollWidth": 320,
+      "innerWidth": 320,
+      "h1": [
+        "선수 탐색"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "가상 A-01",
+          "height": 24
+        },
+        {
+          "text": "가상 A-02",
+          "height": 24
+        },
+        {
+          "text": "가상 A-03",
+          "height": 24
+        },
+        {
+          "text": "가상 A-04",
+          "height": 24
+        },
+        {
+          "text": "가상 A-05",
+          "height": 24
+        },
+        {
+          "text": "가상 A-06",
+          "height": 24
+        },
+        {
+          "text": "가상 A-07",
+          "height": 24
+        },
+        {
+          "text": "가상 A-08",
+          "height": 24
+        },
+        {
+          "text": "가상 A-09",
+          "height": 24
+        },
+        {
+          "text": "가상 A-10",
+          "height": 24
+        },
+        {
+          "text": "가상 A-11",
+          "height": 24
+        },
+        {
+          "text": "가상 A-12",
+          "height": 24
+        }
+      ]
+    },
+    {
+      "name": "detail",
+      "path": "/players/demo_0_00",
+      "width": 320,
+      "scrollWidth": 320,
+      "innerWidth": 320,
+      "h1": [
+        "가상 A-01"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "← 선수 목록으로",
+          "height": 26.390625
+        },
+        {
+          "text": "뒤로 이동",
+          "height": 26.390625
+        },
+        {
+          "text": "선수 비교에 추가",
+          "height": 26.390625
+        },
+        {
+          "text": "URL 공유",
+          "height": 26.390625
+        },
+        {
+          "text": "모델 내부 이동 창 점수차의 비교 기준",
+          "height": 18.140625
+        },
+        {
+          "text": "가공 기록 원천 추적",
+          "height": 18.140625
+        }
+      ]
+    },
+    {
+      "name": "compare",
+      "path": "/compare?players=demo_0_00",
+      "width": 320,
+      "scrollWidth": 320,
+      "innerWidth": 320,
+      "h1": [
+        "선수 비교"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "2026",
+          "height": 21
+        },
+        {
+          "text": "정규시즌포스트시즌 (기록 없음)",
+          "height": 21
+        },
+        {
+          "text": "최근 5출전최근 10출전시즌 전체",
+          "height": 21
+        },
+        {
+          "text": "타자",
+          "height": 21
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "검색·조건 적용",
+          "height": 26.390625
+        },
+        {
+          "text": "선수 1 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "모델 내부 이동 창 점수차의 비교 기준",
+          "height": 18.140625
+        },
+        {
+          "text": "가공 기록 원천 추적",
+          "height": 18.140625
+        },
+        {
+          "text": "선수 2 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "선수 1로 가상 A-01 선택",
+          "height": 19
+        },
+        {
+          "text": "선수 2로 가상 A-01 선택",
+          "height": 19
+        }
+      ]
+    },
+    {
+      "name": "rankings",
+      "path": "/rankings",
+      "width": 320,
+      "scrollWidth": 320,
+      "innerWidth": 320,
+      "h1": [
+        "기세 랭킹"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "초기화",
+          "height": 26.390625
+        }
+      ]
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 375,
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "h1": [
+        "지금, 누가좋은 흐름일까?"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "낮은 신뢰도·산출 불가 선수 확인",
+          "height": 32
+        },
+        {
+          "text": "가상 B-09 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 B-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 C-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 D-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 E-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 F-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 G-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 H-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 I-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 J-10 ↗",
+          "height": 16
+        }
+      ]
+    },
+    {
+      "name": "players",
+      "path": "/players",
+      "width": 375,
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "h1": [
+        "선수 탐색"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "가상 A-01",
+          "height": 24
+        },
+        {
+          "text": "가상 A-02",
+          "height": 24
+        },
+        {
+          "text": "가상 A-03",
+          "height": 24
+        },
+        {
+          "text": "가상 A-04",
+          "height": 24
+        },
+        {
+          "text": "가상 A-05",
+          "height": 24
+        },
+        {
+          "text": "가상 A-06",
+          "height": 24
+        },
+        {
+          "text": "가상 A-07",
+          "height": 24
+        },
+        {
+          "text": "가상 A-08",
+          "height": 24
+        },
+        {
+          "text": "가상 A-09",
+          "height": 24
+        },
+        {
+          "text": "가상 A-10",
+          "height": 24
+        },
+        {
+          "text": "가상 A-11",
+          "height": 24
+        },
+        {
+          "text": "가상 A-12",
+          "height": 24
+        }
+      ]
+    },
+    {
+      "name": "detail",
+      "path": "/players/demo_0_00",
+      "width": 375,
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "h1": [
+        "가상 A-01"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "← 선수 목록으로",
+          "height": 26.390625
+        },
+        {
+          "text": "뒤로 이동",
+          "height": 26.390625
+        },
+        {
+          "text": "선수 비교에 추가",
+          "height": 26.390625
+        },
+        {
+          "text": "URL 공유",
+          "height": 26.390625
+        },
+        {
+          "text": "AVGOPSOBPSLGISOK%BB%",
+          "height": 21
+        },
+        {
+          "text": "전체샘플 A팀",
+          "height": 21
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "",
+          "height": 13
+        },
+        {
+          "text": "필터 초기화",
+          "height": 26.390625
+        },
+        {
+          "text": "표 CSV 내보내기 (DEMO)",
+          "height": 26.390625
+        },
+        {
+          "text": "모델 내부 이동 창 점수차의 비교 기준",
+          "height": 18.140625
+        }
+      ]
+    },
+    {
+      "name": "compare",
+      "path": "/compare?players=demo_0_00",
+      "width": 375,
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "h1": [
+        "선수 비교"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "2026",
+          "height": 21
+        },
+        {
+          "text": "정규시즌포스트시즌 (기록 없음)",
+          "height": 21
+        },
+        {
+          "text": "최근 5출전최근 10출전시즌 전체",
+          "height": 21
+        },
+        {
+          "text": "타자",
+          "height": 21
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "검색·조건 적용",
+          "height": 26.390625
+        },
+        {
+          "text": "선수 1 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "모델 내부 이동 창 점수차의 비교 기준",
+          "height": 18.140625
+        },
+        {
+          "text": "가공 기록 원천 추적",
+          "height": 18.140625
+        },
+        {
+          "text": "선수 2 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "선수 1로 가상 A-01 선택",
+          "height": 19
+        },
+        {
+          "text": "선수 1로 가상 A-02 선택",
+          "height": 19
+        }
+      ]
+    },
+    {
+      "name": "rankings",
+      "path": "/rankings",
+      "width": 375,
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "h1": [
+        "기세 랭킹"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "초기화",
+          "height": 26.390625
+        },
+        {
+          "text": "평점 공식과 역할별 지표 설명",
+          "height": 19
+        }
+      ]
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 430,
+      "scrollWidth": 430,
+      "innerWidth": 430,
+      "h1": [
+        "지금, 누가좋은 흐름일까?"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "낮은 신뢰도·산출 불가 선수 확인",
+          "height": 32
+        },
+        {
+          "text": "가상 B-09 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 B-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 C-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 D-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 E-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 F-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 G-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 H-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 I-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 J-10 ↗",
+          "height": 16
+        }
+      ]
+    },
+    {
+      "name": "players",
+      "path": "/players",
+      "width": 430,
+      "scrollWidth": 430,
+      "innerWidth": 430,
+      "h1": [
+        "선수 탐색"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "가상 A-01",
+          "height": 24
+        },
+        {
+          "text": "가상 A-02",
+          "height": 24
+        },
+        {
+          "text": "가상 A-03",
+          "height": 24
+        },
+        {
+          "text": "가상 A-04",
+          "height": 24
+        },
+        {
+          "text": "가상 A-05",
+          "height": 24
+        },
+        {
+          "text": "가상 A-06",
+          "height": 24
+        },
+        {
+          "text": "가상 A-07",
+          "height": 24
+        },
+        {
+          "text": "가상 A-08",
+          "height": 24
+        },
+        {
+          "text": "가상 A-09",
+          "height": 24
+        },
+        {
+          "text": "가상 A-10",
+          "height": 24
+        },
+        {
+          "text": "가상 A-11",
+          "height": 24
+        },
+        {
+          "text": "가상 A-12",
+          "height": 24
+        }
+      ]
+    },
+    {
+      "name": "detail",
+      "path": "/players/demo_0_00",
+      "width": 430,
+      "scrollWidth": 430,
+      "innerWidth": 430,
+      "h1": [
+        "가상 A-01"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "← 선수 목록으로",
+          "height": 26.390625
+        },
+        {
+          "text": "뒤로 이동",
+          "height": 26.390625
+        },
+        {
+          "text": "선수 비교에 추가",
+          "height": 26.390625
+        },
+        {
+          "text": "URL 공유",
+          "height": 26.390625
+        },
+        {
+          "text": "AVGOPSOBPSLGISOK%BB%",
+          "height": 21
+        },
+        {
+          "text": "전체샘플 A팀",
+          "height": 21
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "",
+          "height": 13
+        },
+        {
+          "text": "필터 초기화",
+          "height": 26.390625
+        },
+        {
+          "text": "표 CSV 내보내기 (DEMO)",
+          "height": 26.390625
+        },
+        {
+          "text": "모델 내부 이동 창 점수차의 비교 기준",
+          "height": 18.140625
+        }
+      ]
+    },
+    {
+      "name": "compare",
+      "path": "/compare?players=demo_0_00",
+      "width": 430,
+      "scrollWidth": 430,
+      "innerWidth": 430,
+      "h1": [
+        "선수 비교"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "2026",
+          "height": 21
+        },
+        {
+          "text": "정규시즌포스트시즌 (기록 없음)",
+          "height": 21
+        },
+        {
+          "text": "최근 5출전최근 10출전시즌 전체",
+          "height": 21
+        },
+        {
+          "text": "타자",
+          "height": 21
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "검색·조건 적용",
+          "height": 26.390625
+        },
+        {
+          "text": "선수 1 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "모델 내부 이동 창 점수차의 비교 기준",
+          "height": 18.140625
+        },
+        {
+          "text": "가공 기록 원천 추적",
+          "height": 18.140625
+        },
+        {
+          "text": "선수 2 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "선수 1로 가상 A-01 선택",
+          "height": 19
+        },
+        {
+          "text": "선수 1로 가상 A-02 선택",
+          "height": 19
+        }
+      ]
+    },
+    {
+      "name": "rankings",
+      "path": "/rankings",
+      "width": 430,
+      "scrollWidth": 430,
+      "innerWidth": 430,
+      "h1": [
+        "기세 랭킹"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "초기화",
+          "height": 26.390625
+        },
+        {
+          "text": "평점 공식과 역할별 지표 설명",
+          "height": 19
+        }
+      ]
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 768,
+      "scrollWidth": 768,
+      "innerWidth": 768,
+      "h1": [
+        "지금, 누가좋은 흐름일까?"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "낮은 신뢰도·산출 불가 선수 확인",
+          "height": 32
+        },
+        {
+          "text": "가상 B-09 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 B-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 C-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 D-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 E-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 F-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 G-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 H-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 I-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 J-10 ↗",
+          "height": 16
+        }
+      ]
+    },
+    {
+      "name": "players",
+      "path": "/players",
+      "width": 768,
+      "scrollWidth": 768,
+      "innerWidth": 768,
+      "h1": [
+        "선수 탐색"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "가상 A-01",
+          "height": 24
+        },
+        {
+          "text": "가상 A-02",
+          "height": 24
+        },
+        {
+          "text": "가상 A-03",
+          "height": 24
+        },
+        {
+          "text": "가상 A-04",
+          "height": 24
+        },
+        {
+          "text": "가상 A-05",
+          "height": 24
+        },
+        {
+          "text": "가상 A-06",
+          "height": 24
+        },
+        {
+          "text": "가상 A-07",
+          "height": 24
+        },
+        {
+          "text": "가상 A-08",
+          "height": 24
+        },
+        {
+          "text": "가상 A-09",
+          "height": 24
+        },
+        {
+          "text": "가상 A-10",
+          "height": 24
+        },
+        {
+          "text": "가상 A-11",
+          "height": 24
+        },
+        {
+          "text": "가상 A-12",
+          "height": 24
+        }
+      ]
+    },
+    {
+      "name": "detail",
+      "path": "/players/demo_0_00",
+      "width": 768,
+      "scrollWidth": 768,
+      "innerWidth": 768,
+      "h1": [
+        "가상 A-01"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "← 선수 목록으로",
+          "height": 26.390625
+        },
+        {
+          "text": "뒤로 이동",
+          "height": 26.390625
+        },
+        {
+          "text": "선수 비교에 추가",
+          "height": 26.390625
+        },
+        {
+          "text": "URL 공유",
+          "height": 26.390625
+        },
+        {
+          "text": "AVGOPSOBPSLGISOK%BB%",
+          "height": 21
+        },
+        {
+          "text": "전체샘플 A팀",
+          "height": 21
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "",
+          "height": 13
+        },
+        {
+          "text": "필터 초기화",
+          "height": 26.390625
+        },
+        {
+          "text": "표 CSV 내보내기 (DEMO)",
+          "height": 26.390625
+        },
+        {
+          "text": "모델 내부 이동 창 점수차의 비교 기준",
+          "height": 18.140625
+        }
+      ]
+    },
+    {
+      "name": "compare",
+      "path": "/compare?players=demo_0_00",
+      "width": 768,
+      "scrollWidth": 768,
+      "innerWidth": 768,
+      "h1": [
+        "선수 비교"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "2026",
+          "height": 21
+        },
+        {
+          "text": "정규시즌포스트시즌 (기록 없음)",
+          "height": 21
+        },
+        {
+          "text": "최근 5출전최근 10출전시즌 전체",
+          "height": 21
+        },
+        {
+          "text": "타자",
+          "height": 21
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "검색·조건 적용",
+          "height": 26.390625
+        },
+        {
+          "text": "선수 1 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "모델 내부 이동 창 점수차의 비교 기준",
+          "height": 18.140625
+        },
+        {
+          "text": "가공 기록 원천 추적",
+          "height": 18.140625
+        },
+        {
+          "text": "선수 2 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "선수 1로 가상 A-01 선택",
+          "height": 19
+        },
+        {
+          "text": "선수 2로 가상 A-01 선택",
+          "height": 19
+        }
+      ]
+    },
+    {
+      "name": "rankings",
+      "path": "/rankings",
+      "width": 768,
+      "scrollWidth": 768,
+      "innerWidth": 768,
+      "h1": [
+        "기세 랭킹"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "초기화",
+          "height": 26.390625
+        },
+        {
+          "text": "평점 공식과 역할별 지표 설명",
+          "height": 19
+        }
+      ]
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "innerWidth": 1440,
+      "h1": [
+        "지금, 누가좋은 흐름일까?"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "낮은 신뢰도·산출 불가 선수 확인",
+          "height": 32
+        },
+        {
+          "text": "가상 B-09 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 B-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 C-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 D-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 E-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 F-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 G-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 H-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 I-10 ↗",
+          "height": 16
+        },
+        {
+          "text": "가상 J-10 ↗",
+          "height": 16
+        }
+      ]
+    },
+    {
+      "name": "players",
+      "path": "/players",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "innerWidth": 1440,
+      "h1": [
+        "선수 탐색"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "가상 A-01",
+          "height": 24
+        },
+        {
+          "text": "가상 A-02",
+          "height": 24
+        },
+        {
+          "text": "가상 A-03",
+          "height": 24
+        },
+        {
+          "text": "가상 A-04",
+          "height": 24
+        },
+        {
+          "text": "가상 A-05",
+          "height": 24
+        },
+        {
+          "text": "가상 A-06",
+          "height": 24
+        },
+        {
+          "text": "가상 A-07",
+          "height": 24
+        },
+        {
+          "text": "가상 A-08",
+          "height": 24
+        },
+        {
+          "text": "가상 A-09",
+          "height": 24
+        },
+        {
+          "text": "가상 A-10",
+          "height": 24
+        },
+        {
+          "text": "가상 A-11",
+          "height": 24
+        },
+        {
+          "text": "가상 A-12",
+          "height": 24
+        }
+      ]
+    },
+    {
+      "name": "detail",
+      "path": "/players/demo_0_00",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "innerWidth": 1440,
+      "h1": [
+        "가상 A-01"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "← 선수 목록으로",
+          "height": 26.390625
+        },
+        {
+          "text": "뒤로 이동",
+          "height": 26.390625
+        },
+        {
+          "text": "선수 비교에 추가",
+          "height": 26.390625
+        },
+        {
+          "text": "URL 공유",
+          "height": 26.390625
+        },
+        {
+          "text": "AVGOPSOBPSLGISOK%BB%",
+          "height": 21
+        },
+        {
+          "text": "전체샘플 A팀",
+          "height": 21
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "",
+          "height": 13
+        },
+        {
+          "text": "필터 초기화",
+          "height": 26.390625
+        },
+        {
+          "text": "표 CSV 내보내기 (DEMO)",
+          "height": 26.390625
+        },
+        {
+          "text": "모델 내부 이동 창 점수차의 비교 기준",
+          "height": 18.140625
+        }
+      ]
+    },
+    {
+      "name": "compare",
+      "path": "/compare?players=demo_0_00",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "innerWidth": 1440,
+      "h1": [
+        "선수 비교"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "2026",
+          "height": 21
+        },
+        {
+          "text": "정규시즌포스트시즌 (기록 없음)",
+          "height": 21
+        },
+        {
+          "text": "최근 5출전최근 10출전시즌 전체",
+          "height": 21
+        },
+        {
+          "text": "타자",
+          "height": 21
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "검색·조건 적용",
+          "height": 26.390625
+        },
+        {
+          "text": "선수 1 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "모델 내부 이동 창 점수차의 비교 기준",
+          "height": 18.140625
+        },
+        {
+          "text": "가공 기록 원천 추적",
+          "height": 18.140625
+        },
+        {
+          "text": "선수 2 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "선수 1로 가상 A-01 선택",
+          "height": 19
+        },
+        {
+          "text": "선수 2로 가상 A-01 선택",
+          "height": 19
+        }
+      ]
+    },
+    {
+      "name": "rankings",
+      "path": "/rankings",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "innerWidth": 1440,
+      "h1": [
+        "기세 랭킹"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "평점 공식과 역할별 지표 설명",
+          "height": 19
+        }
+      ]
+    },
+    {
+      "name": "players-empty",
+      "path": "/players?q=없는선수",
+      "width": 375,
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "h1": [
+        "선수 탐색"
+      ],
+      "demo": true,
+      "smallTargets": []
+    },
+    {
+      "name": "compare-empty",
+      "path": "/compare?q=없는선수",
+      "width": 375,
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "h1": [
+        "선수 비교"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "2026",
+          "height": 21
+        },
+        {
+          "text": "정규시즌포스트시즌 (기록 없음)",
+          "height": 21
+        },
+        {
+          "text": "최근 5출전최근 10출전시즌 전체",
+          "height": 21
+        },
+        {
+          "text": "",
+          "height": 26.390625
+        },
+        {
+          "text": "검색·조건 적용",
+          "height": 26.390625
+        },
+        {
+          "text": "선수 1 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "선수 2 선택 해제",
+          "height": 19
+        },
+        {
+          "text": "선택 초기화",
+          "height": 19
+        }
+      ]
+    },
+    {
+      "name": "players-invalid",
+      "path": "/players?season=2025",
+      "width": 375,
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "h1": [
+        "선수 탐색"
+      ],
+      "demo": true,
+      "smallTargets": []
+    },
+    {
+      "name": "rankings-empty",
+      "path": "/rankings?season=2025",
+      "width": 375,
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "h1": [
+        "기세 랭킹"
+      ],
+      "demo": true,
+      "smallTargets": [
+        {
+          "text": "초기화",
+          "height": 26.390625
+        },
+        {
+          "text": "평점 공식과 역할별 지표 설명",
+          "height": 19
+        }
+      ]
+    },
+    {
+      "name": "players-error",
+      "path": "/players",
+      "width": 375,
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "h1": [
+        "선수 탐색"
+      ],
+      "demo": true,
+      "smallTargets": []
+    },
+    {
+      "name": "players-loading",
+      "path": "/players",
+      "width": 375,
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "h1": [
+        "선수 탐색"
+      ],
+      "demo": true,
+      "smallTargets": []
+    }
+  ],
+  "flow": [],
+  "playerId": "demo_0_00"
+}

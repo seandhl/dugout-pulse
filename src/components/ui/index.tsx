@@ -62,7 +62,18 @@ export function DeltaBadge({
   unit: string;
 }) {
   return (
-    <span className="ds-delta">
+    <span
+      className="ds-delta"
+      data-direction={
+        value === null
+          ? "pending"
+          : value > 0
+            ? "up"
+            : value < 0
+              ? "down"
+              : "flat"
+      }
+    >
       {value === null
         ? "변화 산정 대기"
         : (value > 0 ? "↑ +" : value < 0 ? "↓ " : "→ ") + value + unit}
@@ -206,7 +217,7 @@ export function TrendSparkline({
         <polyline
           points={points}
           fill="none"
-          stroke="var(--accent)"
+          stroke="var(--chart-primary)"
           strokeWidth="3"
         />
         <text x="40" y="125">

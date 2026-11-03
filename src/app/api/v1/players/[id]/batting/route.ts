@@ -23,7 +23,10 @@ async function handleGET(
             ? e.message
             : "상세 데이터를 불러오지 못했습니다.",
       },
-      { status: e instanceof ApiError ? e.status : 500 },
+      {
+        status: e instanceof ApiError ? e.status : 500,
+        headers: { "Cache-Control": "no-store" },
+      },
     );
   }
 }
@@ -32,5 +35,5 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  return observeRequest(() => handleGET(request, { params }));
+  return observeRequest(() => handleGET(request, { params }), request);
 }

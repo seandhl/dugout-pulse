@@ -45,6 +45,12 @@ export function selectDirectory(
         confidence: score?.confidence ?? null,
         lastAppearance: appearances[0]?.date ?? null,
         source: p.sourceId,
+        registration: {
+          status: "unknown" as const,
+          snapshotId: null,
+          asOf: null,
+          sourceId: null,
+        },
       };
     })
     .filter(
@@ -70,6 +76,8 @@ export function selectDirectory(
   const pages = Math.max(1, Math.ceil(players.length / 20));
   const page = Math.min(Number(query.page), pages);
   return {
+    teams: f.teams,
+    playerCount: f.players.length,
     players: players.slice((page - 1) * 20, page * 20),
     total: players.length,
     page,

@@ -1,8 +1,10 @@
 "use client";
+import { releaseFetch } from "@/components/release-provider";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/release-provider";
 import { DetailHeader, DetailFooter } from "./detail-shared";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useReleaseRouter } from "@/components/release-provider";
+import { useSearchParams } from "next/navigation";
 import { Tabs } from "radix-ui";
 import type { PlayerDetail } from "@/server/reads/player-detail";
 import { formatMetric } from "@/stats/batting";
@@ -25,13 +27,13 @@ export function PlayerDetailView({ id }: { id: string }) {
   return <DetailContent key={`${id}/${window}`} id={id} window={window} />;
 }
 function DetailContent({ id, window }: { id: string; window: string }) {
-  const router = useRouter();
+  const router = useReleaseRouter();
   const [data, setData] = useState<PlayerDetail | null>(null),
     [error, setError] = useState(""),
     [retry, setRetry] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    fetch(
+    releaseFetch(
       `/api/v1/players/${encodeURIComponent(id)}/batting?window=${encodeURIComponent(window)}`,
       { signal: controller.signal, cache: "no-store" },
     )
@@ -84,6 +86,12 @@ function DetailContent({ id, window }: { id: string; window: string }) {
           ))}
         </Tabs.List>
         <Tabs.Content value={window}>
+          <p className="ds-notice">
+            선택 창 {window === "season" ? "시즌 전체" : `최근 ${window}출전`} ·
+            실제 표본 {d.recent.sample.appearances}출전 · 데이터 기준일 {d.asOf}
+            . 아래 통계 추이의 이동 창은 최대 5출전으로 고정되며 기세 점수
+            추이가 아닙니다.
+          </p>
           <div className="detail-cards">
             {metrics.map((k) => {
               const m = d.recent.metrics[k],
