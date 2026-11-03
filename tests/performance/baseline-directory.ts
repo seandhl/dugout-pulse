@@ -45,6 +45,12 @@ export function selectDirectory(
         confidence: score?.confidence ?? null,
         lastAppearance: appearances[0]?.date ?? null,
         source: p.sourceId,
+        registration: {
+          status: "unknown" as const,
+          snapshotId: null,
+          asOf: null,
+          sourceId: null,
+        },
       };
     })
     .filter(

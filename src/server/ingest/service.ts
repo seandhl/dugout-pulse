@@ -1,3 +1,4 @@
+import { ApiError } from "../http/errors";
 import { audit } from "./audit";
 import "server-only";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
@@ -125,12 +126,15 @@ export function failure(error: unknown) {
   return Response.json(
     {
       error:
-        error instanceof FileError
+        error instanceof FileError || error instanceof ApiError
           ? error.message
           : "서버 처리에 실패했습니다. 다시 시도하세요.",
     },
     {
-      status: error instanceof FileError ? error.status : 500,
+      status:
+        error instanceof FileError || error instanceof ApiError
+          ? error.status
+          : 500,
       headers: { "Cache-Control": "no-store" },
     },
   );

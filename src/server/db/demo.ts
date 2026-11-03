@@ -1,4 +1,5 @@
 import "server-only";
+import { assertCanonicalPublication } from "../repositories/publication";
 import { DatabaseSync } from "node:sqlite";
 import { createHash } from "node:crypto";
 import { statSync } from "node:fs";
@@ -10,6 +11,7 @@ let cached: { signature: string; fixture: Fixture; hash: string } | undefined;
 let canonical: string | undefined;
 let canonicalProfile: string | undefined;
 export function readDemo(): Fixture {
+  assertCanonicalPublication();
   try {
     if (
       process.env.PUBLICATION_STATE &&

@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { comparisonBasis } from "./comparison-basis";
+import { date } from "../server/ingest/files";
 import { scopeQuery } from "./api";
 const base = scopeQuery
   .extend({
@@ -15,7 +17,12 @@ const defaults = <
 export const momentumQuery = base.transform(defaults);
 export const rankingsQuery = base
   .extend({
-    sort: z.enum(["score", "change"]).default("score"),
+    date: date.optional(),
+    team: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]{1,100}$/)
+      .optional(),
+    sort: z.enum(["score", "change", "decline"]).default("score"),
     page: z
       .string()
       .regex(/^[1-9]\d{0,4}$/)
@@ -54,6 +61,7 @@ const snapshot = z
     explanation: z.unknown(),
     deltaScore: z.number().nullable(),
     previousSnapshotId: z.string().nullable(),
+    comparisonBasis,
     sourceIds: z.array(z.string()),
     inputRefs: z.array(z.string()),
     sampleSize: z.number(),

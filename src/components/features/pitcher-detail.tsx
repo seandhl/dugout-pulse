@@ -133,7 +133,17 @@ function PitcherContent({
             </Tabs.Trigger>
           ))}
         </Tabs.List>
+        <p className="metric-na">
+          {role === "starter" ? "최근 20등판" : "최근 3등판"} N/A · 상세 API
+          미지원
+        </p>
         <Tabs.Content value={window}>
+          <p className="ds-notice">
+            선택 창 {window === "season" ? "시즌 전체" : `최근 ${window}출전`} ·
+            실제 표본 {d.recent.sample.appearances}출전 · 데이터 기준일 {d.asOf}
+            . 아래 통계 추이의 이동 창은 최대 5출전으로 고정되며 기세 점수
+            추이가 아닙니다.
+          </p>
           <section className="panel">
             <h2>선택 {label} 기록</h2>
             <p>{summary(d.recent)}</p>

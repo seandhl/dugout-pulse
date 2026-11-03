@@ -99,7 +99,10 @@ it("publishes corrected score and ranking atomically, retaining history and stab
   expect(current.score).toBeGreaterThan(old.score!);
   expect(current.previousSnapshotId).toBe(old.id);
   expect(current.deltaScore).toBe(current.score! - old.score!);
-  expect(state.momentumSnapshots![old.id]).toEqual(old);
+  expect(current.comparisonBasis.previous).toEqual(old.comparisonBasis.current);
+  const { comparisonBasis: oldBasis, ...storedOld } = old;
+  expect(oldBasis.current.snapshotId).toBe(old.id);
+  expect(state.momentumSnapshots![old.id]).toEqual(storedOld);
   const ranking = momentumView(state, { ...query, sort: "change" });
   expect(ranking.data.find((s) => s.playerId === "demo_target")?.id).toBe(
     current.id,
@@ -201,8 +204,10 @@ it("orders doubleheaders by game identity and excludes other model versions from
     (r) => r.kind === "games" && r.row.game_id === "demo_g20",
   )!;
   last.row.doubleheader_no = 2;
-  for (const s of Object.values(state.momentumSnapshots!))
-    s.algorithmVersion = "old-model";
+  for (const [i, s] of Object.values(state.momentumSnapshots!).entries()) {
+    if (i % 2 === 0) s.algorithmVersion = "old-model";
+    else s.modelVersion = "old-model";
+  }
   state.revision++;
   publishMomentum(state, "2026-11-03T00:00:00Z");
   const result = momentumView(state, query, "demo_target").data[0];
@@ -309,3 +314,29 @@ it.each(["starting_pitcher", "relief_pitcher"] as const)(
     ).toBe(true);
   },
 );
+
+it("projects publication comparison metadata without rewriting stored snapshots", async () => {
+  const { p } = await seed();
+  const state = await p.read();
+  const before = JSON.stringify(state.momentumSnapshots);
+  const s = momentumView(state, query, "demo_target").data[0];
+  expect(s.comparisonBasis.kind).toBe("previous_eligible_publication");
+  expect(s.comparisonBasis.current).toMatchObject({
+    season: s.season,
+    competition: s.competition,
+    role: s.role,
+    window: s.window,
+    modelVersion: s.modelVersion,
+    snapshotId: s.id,
+    asOf: s.asOf,
+    sourceIds: s.sourceIds,
+    inputRefs: s.inputRefs,
+  });
+  const previous = s.previousSnapshotId
+    ? state.momentumSnapshots![s.previousSnapshotId]
+    : null;
+  expect(s.comparisonBasis.previous?.snapshotId ?? null).toBe(
+    previous?.id ?? null,
+  );
+  expect(JSON.stringify(state.momentumSnapshots)).toBe(before);
+});

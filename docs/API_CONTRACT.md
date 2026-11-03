@@ -388,3 +388,25 @@ role은 hitter|starter|reliever 중 하나를 반드시 지정한다. window는 
 ## 상세 차트·로그 추가 계약
 
 타자 batting과 투수 pitching 상세 응답에 `exportPolicy: {demo, exportAllowed, licenseId}` 추가. 현재 canonical DEMO만 허용한다. 타자 games에 경기 당시 소속을 기준으로 찾은 opponent, 투수 games에 stats/cumulative/moving 추가. 모든 집계는 기존 battingStats/pitchingStats를 사용하며 이동 구간은 선택 기간 안의 최대 5출전이다. id/date/order/counts/source/inputRef와 기존 투수 ip/result/role은 유지한다. DB 마이그레이션은 없으며 계약 추가는 `tests/unit/game-analysis.test.ts`로 검증한다.
+
+
+### R05 채택 규칙 (ADR-030, 기존 상충 설명 대체)
+
+원값(저장된 score/deltaScore의 정확한 수치)으로 정렬·동점을 판정한다. score는 내림차순(0 포함), change는 deltaScore > 0만 내림차순, decline은 deltaScore < 0만 오름차순이다. 0 변화와 null 변화는 변화 탭에서 제외한다. 동점은 공동 순위 1,1,3, playerId ASCII 오름차순이며 전체 필터 결과에서 순위를 부여한 뒤 페이지를 나눈다. 표시는 최종 UI에서만 소수 첫째 자리로 반올림하므로 표시값이 같아도 순위는 다를 수 있다. score=null·등록 미확인·표본 미달·중간 미만 신뢰도는 모든 순위에서 제외한다.
+API는 동일 조건의 보드와 같은 원값·순위를 반환한다. `sort=score|change|decline`, 선택 `date`(KST)·`team`, 기존 role/window/season/competition/page/limit을 사용한다. API의 기본 기간은 역할별 권장값이므로 URL과 비교할 때 window를 명시한다.
+
+R04 팀 범위 교정: `/api/v1/player-directory?team=...`의 games/ops/era/lastAppearance는 해당 팀 소속 로그를 먼저 제한한 최근 N 역할 출전이다. teams는 시즌 소속 이력, score/confidence는 전체 기세다. 2026 정규시즌·appeared만 지원한다. 랭킹 team은 전체 최근 표본의 소속 이력 필터이며 모든 게시 수치는 전체 표본 그대로다. 응답 형식과 모델 버전 변경은 없다.
+
+### R06/R07/R09 응답 확장 및 실제 라우트 (ADR-032)
+
+- 실제 `/compare`의 `players`는 쉼표 슬롯 최대 2개다(0/1명은 선택 안내). 3슬롯 이상·중복 쿼리·알 수 없는 필드는 오류 화면과 초기화 링크를 반환한다. 검증 오류에 ID를 2개 이하로 줄이라는 안내를 포함한다. `/api/v1/compare`는 기존 문서의 설계안이며 이번 변경에서 구현하지 않는다.
+- `/api/v1/rankings`, `/api/v1/players/:id/momentum`의 data/excluded snapshot에 필수 `comparisonBasis` 추가: `{kind:'previous_eligible_publication',current:ComparisonPoint,previous:ComparisonPoint|null}`. deltaScore 및 previousSnapshotId는 기존 의미·값을 보존한다.
+- `ComparisonPoint`: `{season,competition,role,window,modelVersion,snapshotId,asOf,sourceIds,inputRefs}`. role은 hitter/starter/reliever, competition은 regular/postseason이다. current/previous가 각각 자신의 원천을 유지한다. 이전 게시 대상이 없으면 previous=null이다.
+- 타격/투구 상세 응답 및 `/compare` read는 동일 구조로 kind=`moving_appearance_window`를 제공한다. fixture release ID를 snapshotId로 사용하고 actual 창은 inputRefs로 식별한다. 이전 창은 최신 역할 출전 하나를 뺀 N출전이며 현재와 중첩한다. 자료가 존재해도 표본·결측으로 delta가 null일 수 있다. season 창은 comparisonBasis=null이다.
+- `/api/v1/player-directory` 선수에 `registration:{status:'unknown',snapshotId:null,asOf:null,sourceId:null}` 추가. fixture에는 등록 스냅샷이 없기 때문이다. membership=appeared만 지원하고 current 등은 400이다. 기존 `/api/v1/players`의 등록 계약은 변경하지 않는다.
+- 지원 범위: 2026 정규시즌 DEMO. player-directory는 다른 season/competition을 거부하며 compare/rankings는 다른 범위를 기록 없음·비교 제외로 안내한다. 데이터 계약을 실제 데이터 지원이나 공급 권리 승인으로 해석하지 않는다.
+- 이행: DB/저장 JSON 마이그레이션 없음. 이전 게시 snapshot을 읽을 때도 서버가 추가 필드를 투영한다. strict 응답 소비자의 allowlist는 새 필드를 수용해야 한다. 수치·ID·modelVersion·DEMO/REAL 구분은 그대로 유지한다.
+
+### 선수 탐색 표본 필터 (ADR-034)
+
+`/api/v1/player-directory`의 선택 `sample` 쿼리: 빈 값(기본 전체), `complete`(games=window), `short`(0<games<window), `unscored`(score=null). 기존 팀·역할·시즌 출전 범위를 적용한 뒤 표본 필터, 고정 정렬, 페이지 분할 순으로 처리한다. score는 기존 전체 팀 기세이며 표본 충족은 기세 적격과 다르다. 미지원 값은 400. 기존 응답 및 저장 스키마는 그대로이므로 DB 마이그레이션은 없다.

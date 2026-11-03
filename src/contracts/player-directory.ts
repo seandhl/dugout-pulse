@@ -10,6 +10,7 @@ export const directoryQuery = z
     role: z.enum(["", "hitter", "starter", "reliever"]).default(""),
     membership: z.literal("appeared").default("appeared"),
     window: z.enum(["3", "5", "10", "20"]).default("10"),
+    sample: z.enum(["", "complete", "short", "unscored"]).default(""),
     sort: z.enum(["name", "games", "ops", "era", "score"]).default("name"),
     page: z
       .string()
@@ -30,6 +31,12 @@ export type DirectoryPlayer = {
   confidence: string | null;
   lastAppearance: string | null;
   source: string;
+  registration: {
+    status: "unknown";
+    snapshotId: null;
+    asOf: null;
+    sourceId: null;
+  };
 };
 export type DirectoryResult = {
   players: DirectoryPlayer[];
@@ -56,6 +63,12 @@ export const directoryResponse: z.ZodType<DirectoryResult> = z.object({
       confidence: z.string().nullable(),
       lastAppearance: z.string().nullable(),
       source: z.string(),
+      registration: z.object({
+        status: z.literal("unknown"),
+        snapshotId: z.null(),
+        asOf: z.null(),
+        sourceId: z.null(),
+      }),
     }),
   ),
   total: z.number().int().nonnegative(),

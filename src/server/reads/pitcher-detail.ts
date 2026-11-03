@@ -1,4 +1,5 @@
 import "server-only";
+import { movingBasis } from "./comparison-basis";
 import { z } from "zod";
 import type { Fixture } from "@/demo/generator";
 import { pitchingStats } from "@/stats/pitching";
@@ -122,6 +123,7 @@ export function selectPitcherDetail(
     scoreEvidence,
     role,
     window,
+    comparisonBasis: movingBasis(f, role, window, roleRows),
     modelVersion: MODEL,
     momentum,
     source: f.sourceId,

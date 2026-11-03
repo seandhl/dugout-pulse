@@ -3,6 +3,7 @@ import {
   type MomentumSnapshot,
 } from "../reads/momentum";
 import "server-only";
+import { assertCanonicalPublication } from "../repositories/publication";
 import { scopeView } from "../reads/scope";
 import { publishedBatting } from "../reads/batting";
 import { mkdir, open, readFile, rename, rm } from "node:fs/promises";
@@ -121,6 +122,7 @@ const empty = (): PipelineState => ({
 export function createPipeline(
   directory = path.join(process.cwd(), ".demo", "pipeline"),
   rights: DemoRights = demoRights,
+  publicStoreGuard: () => void = () => {},
 ) {
   const statePath = path.join(directory, "state.json");
   let publicCache:
@@ -217,6 +219,7 @@ export function createPipeline(
       );
   }
   async function readPublicState() {
+    publicStoreGuard();
     rightsCheck(); // Always run before any cache lookup, including revocation.
     const currentRights = JSON.stringify(rights);
     let signature: string;
@@ -228,12 +231,14 @@ export function createPipeline(
       if ((error as NodeJS.ErrnoException).code === "ENOENT") return empty();
       throw error;
     }
+    publicStoreGuard(); // Recheck after the asynchronous stat boundary.
     if (
       publicCache?.signature === signature &&
       publicCache.rights === currentRights
     )
       return publicCache.state;
     const state = await read();
+    publicStoreGuard(); // Publication may have committed while read() awaited I/O.
     for (const record of Object.values(state.records)) {
       if (
         record.sourceId !== rights.sourceId ||
@@ -677,8 +682,13 @@ export function createPipeline(
       });
     },
     async scope(input: Parameters<typeof scopeView>[1]) {
-      const result = await this.publicResults(input.season, input.competition);
-      return scopeView(await read(), input, result.records);
+      const state = await readPublicState();
+      const records = Object.values(state.records).filter(
+        (r) =>
+          r.row.season === input.season &&
+          r.row.competition === input.competition,
+      );
+      return scopeView(state, input, records);
     },
     async publicResults(season: number, competition: string) {
       const state = await readPublicState();
@@ -711,4 +721,6 @@ export const pipeline = createPipeline(
     ".demo",
     process.env.INGEST_E2E === "1" ? "pipeline-e2e" : "pipeline",
   ),
+  demoRights,
+  assertCanonicalPublication,
 );

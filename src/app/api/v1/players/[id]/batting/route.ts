@@ -23,7 +23,10 @@ async function handleGET(
             ? e.message
             : "상세 데이터를 불러오지 못했습니다.",
       },
-      { status: e instanceof ApiError ? e.status : 500 },
+      {
+        status: e instanceof ApiError ? e.status : 500,
+        headers: { "Cache-Control": "no-store" },
+      },
     );
   }
 }

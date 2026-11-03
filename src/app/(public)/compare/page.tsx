@@ -1,5 +1,6 @@
 export const metadata = { alternates: { canonical: "/compare" } };
 import Link from "next/link";
+import { ComparePicker } from "@/components/features/compare-picker";
 import { readDemo } from "@/server/db/demo";
 import { compareQuery, selectComparison } from "@/server/reads/compare";
 import { DetailFooter } from "@/components/features/detail-shared";
@@ -19,14 +20,17 @@ export default async function Page({
     return (
       <>
         <h1>선수 비교</h1>
-        <p role="alert">비교 조건이 올바르지 않습니다.</p>
+        <p role="alert">
+          비교 조건이 올바르지 않습니다.{" "}
+          {parsed.error.issues.map((issue) => issue.message).join(" ")}
+        </p>
         <Link href="/compare">조건 초기화</Link>
       </>
     );
   const q = parsed.data;
   const f = readDemo();
   const view = selectComparison(f, q);
-  const ids = q.players.split(",").slice(0, 2);
+  const ids = q.players.split(",");
   const href = (slot: number, id: string) => {
     const next = [ids[0] ?? "", ids[1] ?? ""];
     next[slot] = id;
@@ -41,20 +45,25 @@ export default async function Page({
       if (r && i !== slot) params.set(`role${i + 1}`, r);
     return `/compare?${params}`;
   };
-  const matches = f.players.filter(
-    (p) =>
-      !q.q ||
-      `${p.displayName} ${p.playerId} ${f.teams.find((t) => t.teamId === p.teamId)?.name}`
-        .toLowerCase()
-        .includes(q.q.toLowerCase()),
-  );
+  const swapParams = new URLSearchParams(href(0, ids[1] ?? "").split("?")[1]);
+  swapParams.set("players", [ids[1] ?? "", ids[0] ?? ""].join(","));
+  swapParams.delete("role1");
+  swapParams.delete("role2");
+  if (q.role2) swapParams.set("role1", q.role2);
+  if (q.role1) swapParams.set("role2", q.role1);
   return (
     <>
       <header className="page-heading">
         <h1>선수 비교</h1>
         <p>DEMO · 합성 기록 · 공식 선수 기록이 아닙니다.</p>
+        <p>
+          DEMO는 2026 정규시즌만 지원합니다. 다른 시즌·대회는 비교할 수
+          없습니다.
+        </p>
       </header>
       <form
+        id="compare-conditions"
+        className="panel directory-filters"
         action="/compare"
         key={`${q.players}/${q.window}/${q.q}/${q.role1}/${q.role2}`}
       >
@@ -103,17 +112,9 @@ export default async function Page({
             )
           );
         })}
-        <label>
-          선수 검색{" "}
-          <input
-            name="q"
-            type="search"
-            defaultValue={q.q}
-            maxLength={100}
-            placeholder="선수명·ID·팀"
-          />
-        </label>{" "}
-        <button type="submit">검색·조건 적용</button>
+        <button type="submit" className="button">
+          검색·조건 적용
+        </button>
       </form>
       <p>
         동일 시즌·대회·최근 출전 수를 적용합니다. 실제 출전 날짜는 다를 수
@@ -124,7 +125,8 @@ export default async function Page({
       )}
       {view.asOfMismatch && (
         <p role="alert">
-          서로 다른 데이터 시점(as-of)입니다. 직접 비교에 주의하세요.
+          서로 다른 데이터 시점(as-of)입니다. 직접 비교 제외 · 같은 시점의
+          자료가 필요합니다.
         </p>
       )}
       {view.slots.filter(Boolean).length === 2 && ids[0] === ids[1] && (
@@ -132,12 +134,14 @@ export default async function Page({
       )}
       {view.slots.filter(Boolean).length === 2 &&
         ids[0] !== ids[1] &&
-        !view.comparable && (
+        !view.comparable &&
+        !view.asOfMismatch && (
           <p role="alert">
             서로 다른 역할: 점수/능력의 우열 비교 불가. 각자의 데이터만 분리
             표시합니다.
           </p>
         )}
+      <Link href={`/compare?${swapParams}`}>선수 자리 바꾸기</Link>
       <div className="compare-grid">
         {[0, 1].map((i) => {
           const s = view.slots[i];
@@ -146,6 +150,8 @@ export default async function Page({
               <h2>
                 선수 {i + 1}: {s?.d.player.displayName ?? "선택 필요"}
               </h2>
+              <a href="#compare-picker">선수 {i + 1} 찾기·교체</a>
+              {" · "}
               <Link href={href(i, "")}>선수 {i + 1} 선택 해제</Link>
               {ids[i] && !s && view.available && (
                 <p role="status">
@@ -161,7 +167,7 @@ export default async function Page({
                       : `최근 ${q.window}출전`}
                   </p>
                   <p>
-                    sample count: {s.d.recent.sample.appearances}출전 ·{" "}
+                    표본: {s.d.recent.sample.appearances}출전 ·{" "}
                     {"pa" in s.d.recent.sample
                       ? `${s.d.recent.sample.pa ?? "미확인"} PA`
                       : `${s.d.recent.sample.bf ?? "미확인"} BF · ${s.d.recent.sample.outsRecorded ?? "미확인"} outs`}
@@ -200,10 +206,19 @@ export default async function Page({
                         0.001,
                       );
                       return (
-                        <div key={m.label}>
+                        <div
+                          key={m.label}
+                          data-primary={["OPS", "ERA", "기세 점수"].includes(
+                            m.label,
+                          )}
+                        >
                           <dt>
                             {m.label}
-                            {m.lower ? " (낮을수록 좋음)" : ""}
+                            {m.label === "IP"
+                              ? " (투구량 · 우열 없음)"
+                              : m.lower
+                                ? " (낮을수록 좋음)"
+                                : " (높을수록 좋음)"}
                           </dt>
                           <dd>
                             {m.text}
@@ -237,26 +252,21 @@ export default async function Page({
           );
         })}
       </div>
-      <section className="panel">
-        <h2>검색 결과</h2>
-        <p>{matches.length}명 · 각 선수의 선택·교체 링크를 사용하세요.</p>
-        {!matches.length && <p>검색 결과 없음</p>}
-        <ul>
-          {matches.map((p) => (
-            <li key={p.playerId}>
-              {p.displayName} · {p.listedRoles.map((r) => labels[r]).join("/")}{" "}
-              ·{" "}
-              <Link href={href(0, p.playerId)}>
-                선수 1로 {p.displayName} 선택
-              </Link>
-              {" · "}
-              <Link href={href(1, p.playerId)}>
-                선수 2로 {p.displayName} 선택
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <div id="compare-picker">
+        <ComparePicker
+          key={`${q.players}/${q.q}/${q.window}/${q.role1}/${q.role2}`}
+          initialSearch={q.q}
+          selected={ids}
+          candidates={f.players.map((p) => ({
+            id: p.playerId,
+            name: p.displayName,
+            team:
+              f.teams.find((t) => t.teamId === p.teamId)?.name ?? "팀 미확인",
+            roles: p.listedRoles.map((r) => labels[r]).join("/"),
+            hrefs: [href(0, p.playerId), href(1, p.playerId)],
+          }))}
+        />
+      </div>
       <Link href="/compare">선택 초기화</Link>
     </>
   );

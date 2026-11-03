@@ -1,0 +1,19 @@
+{
+  "home": {
+    "playerId": "demo_0_00",
+    "name": "가상 A-01",
+    "team": "샘플 B팀",
+    "sourceId": "synthetic_v2",
+    "sampleSize": 10,
+    "lastAppearance": "2026-10-30",
+    "score": 46.78009882876466,
+    "confidence": "medium",
+    "reason": "ready"
+  },
+  "detail": {
+    "score": 45.839555382753275,
+    "asOf": "2026-11-03T00:00:00.000Z",
+    "modelVersion": "momentum_v0_1_0"
+  },
+  "offline": "오프라인입니다. 새 페이지를 열려면 연결을 확인해 주세요."
+}

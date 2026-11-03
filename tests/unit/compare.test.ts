@@ -48,3 +48,41 @@ it("handles unknown players, no records and insufficient appearances", () => {
   expect(d.slots[0]!.d.recent.sample.appearances).toBe(0);
   expect(d.slots[1]).toBeNull();
 });
+
+it("rejects three slots, unknown fields and repeated URL values without truncation", () => {
+  for (const players of ["demo_0_00,demo_0_01,demo_0_02", ",,", "a,b,c,d"])
+    expect(compareQuery.safeParse({ players }).success).toBe(false);
+  expect(compareQuery.safeParse({ players: ["a", "b"] }).success).toBe(false);
+  expect(compareQuery.safeParse({ unexpected: "1" }).success).toBe(false);
+  expect(() =>
+    selectComparison(generate(), {
+      ...compareQuery.parse({}),
+      players: "a,b,c",
+    }),
+  ).toThrow(/최대 2명/);
+});
+
+it("exposes distinct moving-window evidence with scope and provenance", () => {
+  const view = selectComparison(
+    generate(),
+    compareQuery.parse({ players: "demo_0_10,demo_0_11", window: "5" }),
+  );
+  const basis = view.slots[0]!.d.comparisonBasis!;
+  expect(basis.kind).toBe("moving_appearance_window");
+  expect(basis.current).toMatchObject({
+    season: 2026,
+    competition: "regular",
+    role: "starter",
+    window: 5,
+  });
+  expect(basis.current.modelVersion).toBeTruthy();
+  expect(basis.current.snapshotId).toBeTruthy();
+  expect(basis.current.asOf).toBeTruthy();
+  expect(basis.current.inputRefs).toHaveLength(5);
+  expect(basis.previous!.inputRefs).toHaveLength(5);
+  expect(
+    basis.previous!.inputRefs.filter((ref) =>
+      basis.current.inputRefs.includes(ref),
+    ),
+  ).toHaveLength(4);
+});

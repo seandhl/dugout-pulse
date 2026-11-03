@@ -64,3 +64,21 @@ test("home API validates windows and preserves fixture metadata", async ({
     body.players.every((p: { sampleSize: number }) => p.sampleSize <= 5),
   ).toBe(true);
 });
+
+test("home distinguishes score order, unavailable change and fixture cutoff", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "역할별 최근 출전 기세 TOP5" }),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByTestId("home-rankings")
+      .getByText("변화량 N/A · 홈 API 미제공")
+      .first(),
+  ).toBeVisible();
+  await expect(
+    page.getByText(/0–100점은 절대 실력이나 승리확률/),
+  ).toBeVisible();
+});

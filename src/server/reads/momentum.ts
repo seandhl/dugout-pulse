@@ -1,8 +1,9 @@
 import "server-only";
+import { publicationBasis } from "./comparison-basis";
+import { selectRankingBoards } from "./ranking-boards";
 import { createHash } from "node:crypto";
 import {
   createMomentumBatchScorer,
-  MODEL,
   type Row,
   type Role,
   type Input,
@@ -18,7 +19,8 @@ const roles: Record<PublicRole, Role> = {
   starter: "starting_pitcher",
   reliever: "relief_pitcher",
 };
-export const modelVersion = `${MODEL}_windows_v1`;
+import { modelVersion } from "./momentum-version";
+export { modelVersion } from "./momentum-version";
 export type MomentumSnapshot = {
   id: string;
   playerId: string;
@@ -220,6 +222,7 @@ function* momentumBatches(state: PipelineState, computedAt: string) {
                 s.season === season &&
                 s.competition === competition &&
                 s.algorithmVersion === modelVersion &&
+                s.modelVersion === modelVersion &&
                 s.score !== null &&
                 s.eligibility.eligible,
             )
@@ -304,7 +307,9 @@ export function momentumView(
     competition: string;
     role: PublicRole;
     window: number;
-    sort?: "score" | "change";
+    sort?: "score" | "change" | "decline";
+    date?: string;
+    team?: string;
     page?: number;
     limit?: number;
   },
@@ -320,35 +325,52 @@ export function momentumView(
         s.window === query.window &&
         (!playerId || s.playerId === playerId),
     );
-  const value = (s: MomentumSnapshot) =>
-    query.sort === "change" ? s.deltaScore : s.score;
-  const ranked = snapshots
-    .filter((s) => s.rankingStatus === "ranked" && value(s) !== null)
-    .sort((a, b) => value(b)! - value(a)! || ascii(a.playerId, b.playerId));
-  const rankedIds = new Set(ranked.map((s) => s.id));
+  const board = selectRankingBoards(
+    state,
+    {
+      season: query.season,
+      competition: query.competition as "regular" | "postseason",
+      window: String(query.window) as "3" | "5" | "10" | "20",
+      sort: query.sort ?? "score",
+      page: query.page ?? 1,
+      date: query.date,
+      team: query.team,
+    },
+    query.page === undefined ? Number.MAX_SAFE_INTEGER : (query.limit ?? 20),
+  ).boards.find((b) => b.role === query.role)!;
   const excluded = playerId
     ? []
-    : snapshots.filter((s) => !rankedIds.has(s.id));
+    : board.excludedRows.map((s) => state.momentumSnapshots![s.id]);
   const limit = Math.min(20, Math.max(1, query.limit ?? 20));
   const page = Math.max(1, query.page ?? 1);
   const offset = (page - 1) * limit;
   const paged = query.page !== undefined;
+  const project = (s: MomentumSnapshot) => ({
+    ...s,
+    comparisonBasis: publicationBasis(state, s),
+  });
   return {
     data: playerId
-      ? snapshots
-      : ranked
-          .slice(paged ? offset : 0, paged ? offset + limit : undefined)
-          .map((s, i) => ({ ...s, rank: offset + i + 1 })),
-    excluded: paged ? excluded.slice(offset, offset + limit) : excluded,
+      ? snapshots.map(project)
+      : (query.page !== undefined && query.page > board.pages
+          ? []
+          : board.rows
+        ).map((s) => ({
+          ...project(state.momentumSnapshots![s.id]),
+          rank: s.rank,
+        })),
+    excluded: (paged ? excluded.slice(offset, offset + limit) : excluded).map(
+      project,
+    ),
     ...(playerId
       ? {}
       : {
           pagination: {
             page,
             limit,
-            total: ranked.length,
+            total: board.total,
             excludedTotal: excluded.length,
-            hasMore: offset + limit < Math.max(ranked.length, excluded.length),
+            hasMore: offset + limit < Math.max(board.total, excluded.length),
           },
         }),
     meta: {

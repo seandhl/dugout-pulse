@@ -77,8 +77,9 @@ export function HomeDashboard() {
           : p.confidence === "high"
             ? "신뢰도 높음"
             : "신뢰도 보통"}{" "}
-        · 표본 {p.sampleSize}경기
+        · 표본 {p.sampleSize}/{windowSize}출전
       </p>
+      <p className="metric-na">변화량 N/A · 홈 API 미제공</p>
       <p className="ds-meta">
         최근 출전 {p.lastAppearance ?? "없음"}
         <br />
@@ -101,7 +102,7 @@ export function HomeDashboard() {
           타자·선발·불펜을 나누고, 표본과 신뢰도까지 함께 봅니다.
         </p>
         <a href="#momentum" className="button">
-          최근 상승세 살펴보기 ↓
+          최근 기세 살펴보기 ↓
         </a>
         <div className="home-search">
           <label htmlFor="home-search">팀·선수 검색</label>
@@ -136,7 +137,12 @@ export function HomeDashboard() {
             <span>
               시즌{" "}
               <b>
-                {data.season} · {data.competition}
+                {data.season} ·{" "}
+                {data.competition === "regular"
+                  ? "정규시즌"
+                  : data.competition === "postseason"
+                    ? "포스트시즌"
+                    : data.competition}
               </b>
             </span>
             <span>
@@ -165,7 +171,7 @@ export function HomeDashboard() {
         <div className="section-heading">
           <div>
             <span className="eyebrow">MOMENTUM WATCH</span>
-            <h2>역할별 최근 상승세 TOP5</h2>
+            <h2>역할별 최근 출전 기세 TOP5</h2>
           </div>
           <span className="badge">DEMO</span>
         </div>
@@ -198,7 +204,9 @@ export function HomeDashboard() {
           <Tabs.Content value={role}>
             <p>
               선정: 계산 가능한 선수 중 신뢰도 보통 이상 · 기세 점수 내림차순 ·
-              동점은 선수 ID순. 역할 간 점수는 직접 비교하지 않습니다.
+              동점은 선수 ID순. 역할 간 점수는 직접 비교하지 않습니다. 0–100점은
+              절대 실력이나 승리확률이 아닙니다. 오늘 경기 예측이 아닌 데이터
+              기준일의 기록 요약입니다.
             </p>
             {error ? (
               <div role="alert" className="panel empty">
@@ -239,7 +247,7 @@ export function HomeDashboard() {
                         {p.confidence === "low"
                           ? "낮은 신뢰도 — 순위 제외"
                           : `산출 불가 (${p.reason})`}{" "}
-                        · 표본 {p.sampleSize}경기
+                        · 표본 {p.sampleSize}/{windowSize}출전
                       </p>
                     ))}
                 </details>

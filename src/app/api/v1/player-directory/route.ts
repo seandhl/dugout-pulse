@@ -18,7 +18,10 @@ function handleGET(request: Request) {
             ? error.message
             : "선수 목록을 불러오지 못했습니다.",
       },
-      { status: error instanceof ApiError ? error.status : 500 },
+      {
+        status: error instanceof ApiError ? error.status : 500,
+        headers: { "Cache-Control": "no-store" },
+      },
     );
   }
 }
