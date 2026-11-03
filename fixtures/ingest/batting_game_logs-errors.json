@@ -1,0 +1,13 @@
+[
+  {
+    "season": 2026,
+    "competition": "regular",
+    "external_player_id": "demo_ext_1",
+    "game_id": "demo_game_1",
+    "team_id": "demo_team_1",
+    "pa": 4,
+    "ab": 4,
+    "h": 2,
+    "hr": 1
+  }
+]

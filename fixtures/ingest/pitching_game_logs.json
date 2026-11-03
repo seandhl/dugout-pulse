@@ -1,0 +1,15 @@
+[
+  {
+    "season": 2026,
+    "competition": "regular",
+    "as_of": "2026-10-31T21:00:00",
+    "external_player_id": "demo_ext_2",
+    "game_id": "demo_game_1",
+    "team_id": "demo_team_2",
+    "role": "STARTER",
+    "innings": "6.2",
+    "h": 3,
+    "er": 1,
+    "so": 7
+  }
+]

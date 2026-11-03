@@ -1,0 +1,469 @@
+generator client {
+ provider = "prisma-client"
+ output = "../src/generated/prisma"
+}
+datasource db {
+ provider = "postgresql"
+}
+enum DataMode {
+DEMO
+APPROVED
+}
+enum CompetitionKind {
+REGULAR
+POSTSEASON
+}
+enum PlayerRole {
+BATTER
+STARTER
+RELIEVER
+}
+enum LicenseStatus {
+PENDING
+APPROVED
+REJECTED
+EXPIRED
+REVOKED
+}
+enum BatchStatus {
+STAGED
+VALIDATED
+REJECTED
+}
+enum GameStatus {
+SCHEDULED
+IN_PROGRESS
+SUSPENDED
+FINAL
+CANCELLED
+VOID
+}
+enum RosterStatus {
+REGISTERED
+UNREGISTERED
+UNKNOWN
+}
+enum HistoryEvidence {
+ROSTER
+GAME
+VERIFIED_INPUT
+}
+enum ModelStatus {
+PROPOSED
+ADOPTED
+RETIRED
+}
+enum ScoreStatus {
+READY
+INSUFFICIENT_SAMPLE
+MISSING_DATA
+NO_APPEARANCES
+}
+model DataSource {
+source_id String @id
+public_name String @db.VarChar(200)
+current_status LicenseStatus
+created_at DateTime @default(now()) @db.Timestamptz(3)
+
+back_0 DataLicense[] @relation("fk_0")
+back_9 PlayerSourceIdentity[] @relation("fk_9")
+back_39 AuditEvent[] @relation("fk_39")
+}
+model DataLicense {
+rights_record_id String @id
+source_id String
+version Int
+public_name String @db.VarChar(200)
+attribution String @db.VarChar(1000)
+public_url String? @db.VarChar(2048)
+mode DataMode
+status LicenseStatus
+collection Boolean
+storage Boolean
+derivation Boolean
+publication Boolean
+allowed_fields String[]
+allowed_seasons String[]
+allowed_competitions String[]
+effective_at DateTime @db.Timestamptz(3)
+expires_at DateTime? @db.Timestamptz(3)
+revoked_at DateTime? @db.Timestamptz(3)
+evidence_ref String
+review_ref String
+@@unique([source_id, version])
+@@unique([rights_record_id, source_id, mode])
+relation_0 DataSource @relation("fk_0", fields: [source_id], references: [source_id], onDelete: Restrict, onUpdate: Restrict)
+back_1 ImportBatch[] @relation("fk_1")
+back_40 AuditEvent[] @relation("fk_40")
+}
+model ImportBatch {
+batch_id String @id
+source_id String
+rights_record_id String
+season_id String
+competition_id String
+competition CompetitionKind
+schema_version String @default("1.0.0")
+mode DataMode
+as_of DateTime @db.Timestamptz(3)
+imported_at DateTime @db.Timestamptz(3)
+last_successful_sync_at DateTime? @db.Timestamptz(3)
+raw_hash String @db.Char(64)
+canonical_hash String @db.Char(64)
+adapter_version String @db.VarChar(64)
+status BatchStatus
+validation_report_ref String?
+@@unique([batch_id, source_id, rights_record_id])
+@@unique([batch_id, season_id, competition_id, competition])
+@@unique([source_id, mode, season_id, competition_id, schema_version, canonical_hash], map: "import_batch_dedup")
+@@index([season_id, competition])
+relation_1 DataLicense @relation("fk_1", fields: [rights_record_id, source_id, mode], references: [rights_record_id, source_id, mode], onDelete: Restrict, onUpdate: Restrict)
+back_2 Season[] @relation("fk_2")
+back_3 Competition[] @relation("fk_3")
+relation_4 Season @relation("fk_4", fields: [batch_id, season_id], references: [batch_id, season_id], onDelete: Restrict, onUpdate: Restrict)
+relation_5 Competition @relation("fk_5", fields: [batch_id, competition_id, competition], references: [batch_id, competition_id, kind], onDelete: Restrict, onUpdate: Restrict)
+back_6 Team[] @relation("fk_6")
+back_7 Player[] @relation("fk_7")
+back_11 Game[] @relation("fk_11")
+back_12 Game[] @relation("fk_12")
+back_15 Game[] @relation("fk_15")
+back_16 BattingGameLog[] @relation("fk_16")
+back_20 PitchingGameLog[] @relation("fk_20")
+back_24 RosterSnapshot[] @relation("fk_24")
+back_28 RosterMember[] @relation("fk_28")
+back_29 PlayerTeamHistory[] @relation("fk_29")
+back_32 MomentumSnapshot[] @relation("fk_32")
+back_33 MomentumSnapshot[] @relation("fk_33")
+back_37 ImportRowIssue[] @relation("fk_37")
+back_38 AuditEvent[] @relation("fk_38")
+}
+model Season {
+season_id String
+batch_id String
+source_id String
+rights_record_id String
+as_of DateTime @db.Timestamptz(3)
+source_record_key String @db.VarChar(200)
+missing_fields Json @default("{}")
+year Int
+label String @db.VarChar(100)
+starts_on DateTime @db.Date
+ends_on DateTime @db.Date
+@@id([batch_id, season_id])
+@@unique([batch_id])
+@@unique([batch_id, year])
+relation_2 ImportBatch @relation("fk_2", fields: [batch_id, source_id, rights_record_id], references: [batch_id, source_id, rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+back_4 ImportBatch[] @relation("fk_4")
+}
+model Competition {
+competition_id String
+batch_id String
+source_id String
+rights_record_id String
+as_of DateTime @db.Timestamptz(3)
+source_record_key String @db.VarChar(200)
+missing_fields Json @default("{}")
+kind CompetitionKind
+label String @db.VarChar(100)
+@@id([batch_id, competition_id])
+@@unique([batch_id])
+@@unique([batch_id, competition_id, kind])
+relation_3 ImportBatch @relation("fk_3", fields: [batch_id, source_id, rights_record_id], references: [batch_id, source_id, rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+back_5 ImportBatch[] @relation("fk_5")
+}
+model Team {
+team_id String
+batch_id String
+source_id String
+rights_record_id String
+as_of DateTime @db.Timestamptz(3)
+source_record_key String @db.VarChar(200)
+missing_fields Json @default("{}")
+name String @db.VarChar(100)
+short_name String @db.VarChar(20)
+@@id([batch_id, team_id])
+
+relation_6 ImportBatch @relation("fk_6", fields: [batch_id, source_id, rights_record_id], references: [batch_id, source_id, rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+back_13 Game[] @relation("fk_13")
+back_14 Game[] @relation("fk_14")
+back_19 BattingGameLog[] @relation("fk_19")
+back_23 PitchingGameLog[] @relation("fk_23")
+back_27 RosterMember[] @relation("fk_27")
+back_31 PlayerTeamHistory[] @relation("fk_31")
+}
+model PlayerIdentity {
+player_id String @id
+
+back_8 Player[] @relation("fk_8")
+back_10 PlayerSourceIdentity[] @relation("fk_10")
+}
+model Player {
+player_id String
+batch_id String
+source_id String
+rights_record_id String
+as_of DateTime @db.Timestamptz(3)
+source_record_key String @db.VarChar(200)
+missing_fields Json @default("{}")
+display_name String @db.VarChar(100)
+listed_roles PlayerRole[]
+@@id([batch_id, player_id])
+@@index([display_name, player_id])
+relation_7 ImportBatch @relation("fk_7", fields: [batch_id, source_id, rights_record_id], references: [batch_id, source_id, rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+relation_8 PlayerIdentity @relation("fk_8", fields: [player_id], references: [player_id], onDelete: Restrict, onUpdate: Restrict)
+back_18 BattingGameLog[] @relation("fk_18")
+back_22 PitchingGameLog[] @relation("fk_22")
+back_26 RosterMember[] @relation("fk_26")
+back_30 PlayerTeamHistory[] @relation("fk_30")
+back_34 MomentumSnapshot[] @relation("fk_34")
+}
+model PlayerSourceIdentity {
+source_id String
+external_player_id String @db.VarChar(200)
+player_id String
+verified_at DateTime @db.Timestamptz(3)
+audit_event_id String
+@@id([source_id, external_player_id])
+@@index([player_id])
+relation_9 DataSource @relation("fk_9", fields: [source_id], references: [source_id], onDelete: Restrict, onUpdate: Restrict)
+relation_10 PlayerIdentity @relation("fk_10", fields: [player_id], references: [player_id], onDelete: Restrict, onUpdate: Restrict)
+relation_41 AuditEvent @relation("fk_41", fields: [audit_event_id], references: [audit_event_id], onDelete: Restrict, onUpdate: Restrict)
+}
+model Game {
+game_id String
+batch_id String
+source_id String
+rights_record_id String
+as_of DateTime @db.Timestamptz(3)
+source_record_key String @db.VarChar(200)
+missing_fields Json @default("{}")
+season_id String
+competition_id String
+competition CompetitionKind
+home_team_id String
+away_team_id String
+original_date DateTime @db.Date
+played_on DateTime? @db.Date
+scheduled_at_kst DateTime? @db.Timestamptz(3)
+started_at DateTime? @db.Timestamptz(3)
+completed_at DateTime? @db.Timestamptz(3)
+doubleheader_no Int
+status GameStatus
+record_revision Int
+supersedes_batch_id String?
+corrected_at DateTime? @db.Timestamptz(3)
+@@id([batch_id, game_id])
+@@index([batch_id, original_date])
+@@index([season_id, competition, completed_at])
+relation_11 ImportBatch? @relation("fk_11", fields: [batch_id, source_id, rights_record_id], references: [batch_id, source_id, rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+relation_12 ImportBatch? @relation("fk_12", fields: [batch_id, season_id, competition_id, competition], references: [batch_id, season_id, competition_id, competition], onDelete: Restrict, onUpdate: Restrict)
+relation_13 Team? @relation("fk_13", fields: [batch_id, home_team_id], references: [batch_id, team_id], onDelete: Restrict, onUpdate: Restrict)
+relation_14 Team? @relation("fk_14", fields: [batch_id, away_team_id], references: [batch_id, team_id], onDelete: Restrict, onUpdate: Restrict)
+relation_15 ImportBatch? @relation("fk_15", fields: [supersedes_batch_id], references: [batch_id], onDelete: Restrict, onUpdate: Restrict)
+back_17 BattingGameLog[] @relation("fk_17")
+back_21 PitchingGameLog[] @relation("fk_21")
+back_35 MomentumSnapshot[] @relation("fk_35")
+}
+model BattingGameLog {
+batch_id String
+source_id String
+rights_record_id String
+as_of DateTime @db.Timestamptz(3)
+source_record_key String @db.VarChar(200)
+missing_fields Json @default("{}")
+game_id String
+player_id String
+team_id String
+role PlayerRole
+external_game_id String @db.VarChar(200)
+external_player_id String @db.VarChar(200)
+external_appearance_id String @db.VarChar(200)
+pa Int?
+ab Int?
+h Int?
+doubles Int?
+triples Int?
+hr Int?
+bb Int?
+hbp Int?
+ibb Int?
+so Int?
+sf Int?
+sac Int?
+r Int?
+rbi Int?
+sb Int?
+cs Int?
+tb Int?
+@@id([batch_id, game_id, player_id])
+@@unique([batch_id, source_id, external_game_id, external_player_id, external_appearance_id, role], map: "battinggamelog_source_appearance")
+@@index([batch_id, player_id, role, game_id])
+relation_16 ImportBatch @relation("fk_16", fields: [batch_id, source_id, rights_record_id], references: [batch_id, source_id, rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+relation_17 Game @relation("fk_17", fields: [batch_id, game_id], references: [batch_id, game_id], onDelete: Restrict, onUpdate: Restrict)
+relation_18 Player @relation("fk_18", fields: [batch_id, player_id], references: [batch_id, player_id], onDelete: Restrict, onUpdate: Restrict)
+relation_19 Team @relation("fk_19", fields: [batch_id, team_id], references: [batch_id, team_id], onDelete: Restrict, onUpdate: Restrict)
+}
+model PitchingGameLog {
+batch_id String
+source_id String
+rights_record_id String
+as_of DateTime @db.Timestamptz(3)
+source_record_key String @db.VarChar(200)
+missing_fields Json @default("{}")
+game_id String
+player_id String
+team_id String
+role PlayerRole
+external_game_id String @db.VarChar(200)
+external_player_id String @db.VarChar(200)
+external_appearance_id String @db.VarChar(200)
+bf Int?
+outs_recorded Int?
+h Int?
+er Int?
+r Int?
+bb Int?
+ibb Int?
+hbp Int?
+so Int?
+hr Int?
+np Int?
+sv Int?
+hld Int?
+gs Int
+@@id([batch_id, game_id, player_id])
+@@unique([batch_id, source_id, external_game_id, external_player_id, external_appearance_id, role], map: "pitchinggamelog_source_appearance")
+@@index([batch_id, player_id, role, game_id])
+relation_20 ImportBatch @relation("fk_20", fields: [batch_id, source_id, rights_record_id], references: [batch_id, source_id, rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+relation_21 Game @relation("fk_21", fields: [batch_id, game_id], references: [batch_id, game_id], onDelete: Restrict, onUpdate: Restrict)
+relation_22 Player @relation("fk_22", fields: [batch_id, player_id], references: [batch_id, player_id], onDelete: Restrict, onUpdate: Restrict)
+relation_23 Team @relation("fk_23", fields: [batch_id, team_id], references: [batch_id, team_id], onDelete: Restrict, onUpdate: Restrict)
+}
+model RosterSnapshot {
+snapshot_id String
+batch_id String
+source_id String
+rights_record_id String
+as_of DateTime @db.Timestamptz(3)
+source_record_key String @db.VarChar(200)
+missing_fields Json @default("{}")
+snapshot_on DateTime @db.Date
+@@id([batch_id, snapshot_id])
+@@unique([batch_id, snapshot_on])
+relation_24 ImportBatch @relation("fk_24", fields: [batch_id, source_id, rights_record_id], references: [batch_id, source_id, rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+back_25 RosterMember[] @relation("fk_25")
+}
+model RosterMember {
+batch_id String
+source_id String
+rights_record_id String
+as_of DateTime @db.Timestamptz(3)
+source_record_key String @db.VarChar(200)
+missing_fields Json @default("{}")
+snapshot_id String
+snapshot_on DateTime @db.Date
+player_id String
+team_id String?
+effective_on DateTime? @db.Date
+status RosterStatus
+uniform_number String? @db.VarChar(8)
+@@id([batch_id, snapshot_on, player_id])
+@@index([batch_id, player_id, snapshot_on])
+relation_25 RosterSnapshot @relation("fk_25", fields: [batch_id, snapshot_id], references: [batch_id, snapshot_id], onDelete: Restrict, onUpdate: Restrict)
+relation_26 Player @relation("fk_26", fields: [batch_id, player_id], references: [batch_id, player_id], onDelete: Restrict, onUpdate: Restrict)
+relation_27 Team? @relation("fk_27", fields: [batch_id, team_id], references: [batch_id, team_id], onDelete: Restrict, onUpdate: Restrict)
+relation_28 ImportBatch @relation("fk_28", fields: [batch_id, source_id, rights_record_id], references: [batch_id, source_id, rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+}
+model PlayerTeamHistory {
+history_id String
+batch_id String
+source_id String
+rights_record_id String
+as_of DateTime @db.Timestamptz(3)
+source_record_key String @db.VarChar(200)
+missing_fields Json @default("{}")
+player_id String
+team_id String
+observed_on DateTime @db.Date
+effective_on DateTime? @db.Date
+evidence_kind HistoryEvidence
+@@id([batch_id, history_id])
+@@index([batch_id, player_id, observed_on])
+relation_29 ImportBatch @relation("fk_29", fields: [batch_id, source_id, rights_record_id], references: [batch_id, source_id, rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+relation_30 Player @relation("fk_30", fields: [batch_id, player_id], references: [batch_id, player_id], onDelete: Restrict, onUpdate: Restrict)
+relation_31 Team @relation("fk_31", fields: [batch_id, team_id], references: [batch_id, team_id], onDelete: Restrict, onUpdate: Restrict)
+}
+model ScoringModelVersion {
+score_version_id String @id
+version String @unique @db.VarChar(64)
+status ModelStatus
+roles Json
+adopted_at DateTime? @db.Timestamptz(3)
+
+back_36 MomentumSnapshot[] @relation("fk_36")
+}
+model MomentumSnapshot {
+score_snapshot_id String
+batch_id String
+source_id String
+rights_record_id String
+as_of DateTime @db.Timestamptz(3)
+source_record_key String @db.VarChar(200)
+missing_fields Json @default("{}")
+season_id String
+competition_id String
+competition CompetitionKind
+player_id String
+score_version_id String
+evaluation_role PlayerRole
+team_scope String
+window Int
+as_of_game_id String
+cutoff_at DateTime @db.Timestamptz(3)
+status ScoreStatus
+value Decimal? @db.Decimal(30,15)
+previous_value Decimal? @db.Decimal(30,15)
+delta Decimal? @db.Decimal(30,15)
+sample Json
+input_refs Json
+computed_at DateTime @db.Timestamptz(3)
+@@id([batch_id, score_snapshot_id])
+@@unique([batch_id, score_version_id, player_id, evaluation_role, team_scope, cutoff_at])
+@@unique([batch_id, season_id, competition, player_id, evaluation_role, window, as_of_game_id, score_version_id, team_scope], map: "momentum_game_window_key")
+@@index([season_id, competition, evaluation_role, window, score_version_id, value])
+@@index([batch_id, season_id, competition, evaluation_role, window, score_version_id, value(sort: Desc), player_id], map: "momentum_public_page")
+relation_32 ImportBatch @relation("fk_32", fields: [batch_id, source_id, rights_record_id], references: [batch_id, source_id, rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+relation_33 ImportBatch @relation("fk_33", fields: [batch_id, season_id, competition_id, competition], references: [batch_id, season_id, competition_id, competition], onDelete: Restrict, onUpdate: Restrict)
+relation_34 Player @relation("fk_34", fields: [batch_id, player_id], references: [batch_id, player_id], onDelete: Restrict, onUpdate: Restrict)
+relation_35 Game @relation("fk_35", fields: [batch_id, as_of_game_id], references: [batch_id, game_id], onDelete: Restrict, onUpdate: Restrict)
+relation_36 ScoringModelVersion @relation("fk_36", fields: [score_version_id], references: [score_version_id], onDelete: Restrict, onUpdate: Restrict)
+}
+model ImportRowIssue {
+issue_id String @id
+batch_id String
+row_number Int?
+entity String @db.VarChar(100)
+source_record_key String? @db.VarChar(200)
+field String? @db.VarChar(100)
+code String @db.VarChar(100)
+message String @db.VarChar(1000)
+created_at DateTime @default(now()) @db.Timestamptz(3)
+@@index([batch_id, row_number])
+relation_37 ImportBatch @relation("fk_37", fields: [batch_id], references: [batch_id], onDelete: Restrict, onUpdate: Restrict)
+}
+model AuditEvent {
+audit_event_id String @id
+batch_id String?
+source_id String?
+rights_record_id String?
+action String @db.VarChar(100)
+actor_ref String @db.VarChar(200)
+entity_ref String @db.VarChar(200)
+metadata Json
+occurred_at DateTime @default(now()) @db.Timestamptz(3)
+@@index([batch_id, occurred_at])
+relation_38 ImportBatch? @relation("fk_38", fields: [batch_id], references: [batch_id], onDelete: Restrict, onUpdate: Restrict)
+relation_39 DataSource? @relation("fk_39", fields: [source_id], references: [source_id], onDelete: Restrict, onUpdate: Restrict)
+relation_40 DataLicense? @relation("fk_40", fields: [rights_record_id], references: [rights_record_id], onDelete: Restrict, onUpdate: Restrict)
+back_41 PlayerSourceIdentity[] @relation("fk_41")
+}

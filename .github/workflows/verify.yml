@@ -1,0 +1,45 @@
+name: Verify
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17.6
+        env:
+          POSTGRES_USER: fixture
+          POSTGRES_PASSWORD: fixture
+          POSTGRES_DB: fixture
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U fixture"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://fixture:fixture@127.0.0.1:5432/fixture
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.11.0
+          cache: pnpm
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install browser and SQL client
+        run: |
+          pnpm exec playwright install --with-deps chromium
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+      - name: Verify
+        run: pnpm verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-results
+          path: |
+            coverage/core-summary.json
+            playwright-report/
+            test-results/
+          if-no-files-found: warn

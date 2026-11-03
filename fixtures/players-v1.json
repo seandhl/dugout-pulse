@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "releaseId": "demo_fixture_v1",
+  "asOf": "2026-11-03T00:00:00.000Z",
+  "lastUpdatedAt": "2026-11-03T00:00:00.000Z",
+  "attribution": "자체 제작 가상 DEMO 선수. 경기 기록 및 공식 데이터 갱신 이력 없음. 시각은 fixture 제작 시각.",
+  "players": [
+    {
+      "playerId": "demo_a",
+      "displayName": "가상 타자",
+      "listedRoles": ["batter"],
+      "sourceId": "demo_fixture_v1",
+      "sampleSize": 0
+    },
+    {
+      "playerId": "demo_b",
+      "displayName": "가상 선발",
+      "listedRoles": ["starter"],
+      "sourceId": "demo_fixture_v1",
+      "sampleSize": 0
+    },
+    {
+      "playerId": "demo_c",
+      "displayName": "가상 불펜",
+      "listedRoles": ["reliever"],
+      "sourceId": "demo_fixture_v1",
+      "sampleSize": 0
+    }
+  ]
+}

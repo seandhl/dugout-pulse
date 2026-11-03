@@ -1,0 +1,20 @@
+[
+  {
+    "season": 2026,
+    "competition": "regular",
+    "as_of": "2026-10-31T21:00:00",
+    "external_player_id": "demo_ext_1",
+    "player_id": "demo_player_1",
+    "display_name": "DEMO 동명이인",
+    "role": "BATTER"
+  },
+  {
+    "season": 2026,
+    "competition": "regular",
+    "as_of": "2026-10-31T21:00:00",
+    "external_player_id": "demo_ext_2",
+    "player_id": "demo_player_2",
+    "display_name": "DEMO 동명이인",
+    "role": "STARTER"
+  }
+]

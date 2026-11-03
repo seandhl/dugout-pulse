@@ -1,0 +1,118 @@
+[
+  {
+    "name": "단타",
+    "rows": [{ "pa": 4, "ab": 4, "h": 1 }],
+    "metric": "avg",
+    "expected": 0.25
+  },
+  {
+    "name": "가중 합계",
+    "rows": [
+      { "pa": 1, "ab": 1, "h": 1 },
+      { "pa": 9, "ab": 9, "h": 0 }
+    ],
+    "metric": "avg",
+    "expected": 0.1
+  },
+  {
+    "name": "AB 0",
+    "rows": [{ "pa": 1, "ab": 0, "h": 0 }],
+    "metric": "avg",
+    "expected": null
+  },
+  {
+    "name": "SF 포함 OBP",
+    "rows": [
+      {
+        "pa": 8,
+        "ab": 4,
+        "h": 2,
+        "bb": 1,
+        "hbp": 1,
+        "sf": 1,
+        "sac": 1,
+        "ci": 0
+      }
+    ],
+    "metric": "obp",
+    "expected": 0.5714285714285714
+  },
+  {
+    "name": "SF 누락",
+    "rows": [{ "pa": 6, "ab": 4, "h": 2, "bb": 1, "hbp": 1 }],
+    "metric": "obp",
+    "expected": null
+  },
+  {
+    "name": "총루타 10",
+    "rows": [{ "pa": 5, "ab": 5, "h": 4, "doubles": 1, "triples": 1, "hr": 1 }],
+    "metric": "slg",
+    "expected": 2
+  },
+  {
+    "name": "ISO 1.2",
+    "rows": [{ "pa": 5, "ab": 5, "h": 4, "doubles": 1, "triples": 1, "hr": 1 }],
+    "metric": "iso",
+    "expected": 1.2
+  },
+  {
+    "name": "OPS 1.75",
+    "rows": [
+      {
+        "pa": 4,
+        "ab": 4,
+        "h": 2,
+        "doubles": 0,
+        "triples": 0,
+        "hr": 1,
+        "bb": 0,
+        "hbp": 0,
+        "sf": 0
+      }
+    ],
+    "metric": "ops",
+    "expected": 1.75
+  },
+  {
+    "name": "볼넷 비율",
+    "rows": [{ "pa": 5, "bb": 1 }],
+    "metric": "bbPct",
+    "expected": 0.2
+  },
+  {
+    "name": "삼진 비율",
+    "rows": [{ "pa": 5, "so": 2 }],
+    "metric": "kPct",
+    "expected": 0.4
+  },
+  {
+    "name": "홈런 타석당",
+    "rows": [{ "pa": 5, "hr": 1 }],
+    "metric": "hrPerPA",
+    "expected": 0.2
+  },
+  {
+    "name": "안타 타석당",
+    "rows": [{ "pa": 5, "h": 2 }],
+    "metric": "hPerPA",
+    "expected": 0.4
+  },
+  {
+    "name": "도루 개수",
+    "rows": [{ "pa": 4, "sb": 2, "cs": 0 }],
+    "metric": "sb",
+    "expected": 2
+  },
+  {
+    "name": "도루 실패 개수",
+    "rows": [{ "pa": 4, "sb": 2, "cs": 1 }],
+    "metric": "cs",
+    "expected": 1
+  },
+  {
+    "name": "부분 누락",
+    "rows": [{ "pa": 4, "bb": 1 }, { "pa": 4 }],
+    "metric": "bbPct",
+    "expected": null
+  }
+]

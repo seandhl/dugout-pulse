@@ -1,0 +1,12 @@
+[
+  {
+    "season": 2026,
+    "competition": "regular",
+    "game_id": "demo_game_1",
+    "played_on": "2026-10-31",
+    "scheduled_at_kst": "2026-10-31T18:00:00",
+    "home_team_id": "demo_team_1",
+    "away_team_id": "demo_team_2",
+    "status": "FINAL"
+  }
+]

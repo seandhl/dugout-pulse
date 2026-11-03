@@ -1,0 +1,22 @@
+[
+  {
+    "season": 2026,
+    "competition": "regular",
+    "as_of": "2026-10-31T21:00:00",
+    "external_player_id": "demo_ext_1",
+    "team_id": "demo_team_1",
+    "snapshot_on": "2026-10-31",
+    "effective_on": "2026-10-30",
+    "status": "REGISTERED"
+  },
+  {
+    "season": 2026,
+    "competition": "regular",
+    "as_of": "2026-10-31T21:00:00",
+    "external_player_id": "demo_ext_1",
+    "team_id": "demo_team_1",
+    "snapshot_on": "2026-10-31",
+    "effective_on": "2026-10-30",
+    "status": "REGISTERED"
+  }
+]

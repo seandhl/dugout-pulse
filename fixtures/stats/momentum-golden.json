@@ -1,0 +1,134 @@
+[
+  {
+    "id": "hitter-neutral",
+    "role": "hitter",
+    "variant": "neutral",
+    "status": "ready",
+    "reason": null,
+    "score": 50.0,
+    "label": "보통",
+    "confidence": "medium",
+    "rawScore": 50.0
+  },
+  {
+    "id": "hitter-up",
+    "role": "hitter",
+    "variant": "up",
+    "status": "ready",
+    "reason": null,
+    "score": 70.9,
+    "label": "상승",
+    "confidence": "medium",
+    "rawScore": 70.90191337850933
+  },
+  {
+    "id": "hitter-down",
+    "role": "hitter",
+    "variant": "down",
+    "status": "ready",
+    "reason": null,
+    "score": 35.9,
+    "label": "하락",
+    "confidence": "medium",
+    "rawScore": 35.92922040860502
+  },
+  {
+    "id": "starting_pitcher-neutral",
+    "role": "starting_pitcher",
+    "variant": "neutral",
+    "status": "ready",
+    "reason": null,
+    "score": 50.0,
+    "label": "보통",
+    "confidence": "medium",
+    "rawScore": 50.0
+  },
+  {
+    "id": "starting_pitcher-up",
+    "role": "starting_pitcher",
+    "variant": "up",
+    "status": "ready",
+    "reason": null,
+    "score": 74.0,
+    "label": "상승",
+    "confidence": "medium",
+    "rawScore": 73.98017244299646
+  },
+  {
+    "id": "starting_pitcher-down",
+    "role": "starting_pitcher",
+    "variant": "down",
+    "status": "ready",
+    "reason": null,
+    "score": 25.6,
+    "label": "하락",
+    "confidence": "medium",
+    "rawScore": 25.55028787655955
+  },
+  {
+    "id": "relief_pitcher-neutral",
+    "role": "relief_pitcher",
+    "variant": "neutral",
+    "status": "ready",
+    "reason": null,
+    "score": 50.0,
+    "label": "보통",
+    "confidence": "high",
+    "rawScore": 50.0
+  },
+  {
+    "id": "relief_pitcher-up",
+    "role": "relief_pitcher",
+    "variant": "up",
+    "status": "ready",
+    "reason": null,
+    "score": 77.3,
+    "label": "상승",
+    "confidence": "high",
+    "rawScore": 77.33124585780565
+  },
+  {
+    "id": "relief_pitcher-down",
+    "role": "relief_pitcher",
+    "variant": "down",
+    "status": "ready",
+    "reason": null,
+    "score": 17.4,
+    "label": "하락",
+    "confidence": "high",
+    "rawScore": 17.40347285542862
+  },
+  {
+    "id": "hitter-sample",
+    "role": "hitter",
+    "variant": "sample",
+    "status": "withheld",
+    "reason": "insufficient_data",
+    "score": null,
+    "label": null,
+    "confidence": null,
+    "rawScore": null
+  },
+  {
+    "id": "hitter-baseline",
+    "role": "hitter",
+    "variant": "baseline",
+    "status": "withheld",
+    "reason": "invalid_baseline",
+    "score": null,
+    "label": null,
+    "confidence": null,
+    "rawScore": null
+  },
+  {
+    "id": "hitter-unlicensed",
+    "role": "hitter",
+    "variant": "unlicensed",
+    "status": "withheld",
+    "reason": "data_not_licensed",
+    "score": null,
+    "label": null,
+    "confidence": null,
+    "rawScore": null
+  }
+]

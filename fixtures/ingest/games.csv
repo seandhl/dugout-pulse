@@ -1,0 +1,2 @@
+season,competition,as_of,game_id,played_on,scheduled_at_kst,home_team_id,away_team_id,status
+2026,regular,2026-10-31T21:00:00,demo_game_1,2026-10-31,2026-10-31T18:00:00,demo_team_1,demo_team_2,FINAL
