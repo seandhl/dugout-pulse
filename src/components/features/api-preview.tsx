@@ -1,4 +1,5 @@
 "use client";
+import { releaseFetch } from "@/components/release-provider";
 import { useState } from "react";
 import { playersResponse, type Player } from "@/contracts/api";
 export function ApiPreview() {
@@ -9,7 +10,7 @@ export function ApiPreview() {
   async function load() {
     setState("loading");
     try {
-      const response = await fetch("/api/v1/players", {
+      const response = await releaseFetch("/api/v1/players", {
         cache: "no-store",
         signal: AbortSignal.timeout(10000),
       });

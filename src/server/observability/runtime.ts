@@ -1,4 +1,9 @@
 import "server-only";
+import {
+  withPublication,
+  publicationIdentity,
+} from "../repositories/publication";
+import { createHash } from "node:crypto";
 import { appendFile, mkdir, open } from "node:fs/promises";
 import path from "node:path";
 import type { AlertAdapter } from "./rules";
@@ -45,7 +50,33 @@ export const structuredLogAdapter: AlertAdapter = {
       count: a.count,
     }),
 };
-export async function observeRequest(run: () => Promise<Response> | Response) {
+export async function observeRequest(
+  run: () => Promise<Response> | Response,
+  request?: Request,
+): Promise<Response> {
+  if (request && new URL(request.url).pathname.startsWith("/api/v1/")) {
+    return withPublication(
+      request.headers.get("x-pulse-release") ??
+        new URL(request.url).searchParams.get("releaseId") ??
+        undefined,
+      async () => {
+        const response = await observeRequest(run);
+        if (response.ok) {
+          const identity = publicationIdentity();
+          response.headers.set("X-Pulse-Release", identity.releaseId);
+          response.headers.set("X-Pulse-Revision", String(identity.revision));
+          response.headers.set("X-Pulse-As-Of", identity.asOf);
+          response.headers.set(
+            "ETag",
+            `"${createHash("sha256")
+              .update(await response.clone().text())
+              .digest("hex")}"`,
+          );
+        }
+        return response;
+      },
+    );
+  }
   const start = performance.now();
   let status = 500;
   try {

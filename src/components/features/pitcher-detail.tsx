@@ -1,7 +1,9 @@
 "use client";
+import { releaseFetch } from "@/components/release-provider";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import Link from "@/components/release-provider";
+import { useReleaseRouter } from "@/components/release-provider";
+import { useSearchParams } from "next/navigation";
 import { Tabs } from "radix-ui";
 import type { PitcherDetail } from "@/server/reads/pitcher-detail";
 import { formatMetric } from "@/stats/batting";
@@ -22,7 +24,8 @@ export function PitcherDetailView({
   id: string;
   defaultRole: "starter" | "reliever";
 }) {
-  const params = useSearchParams();
+  const params = new URLSearchParams(useSearchParams());
+  params.delete("releaseId");
   const role = params.get("role") ?? defaultRole;
   const window = params.get("window") ?? (role === "starter" ? "5" : "10");
   return (
@@ -38,13 +41,13 @@ function PitcherContent({
   role: string;
   window: string;
 }) {
-  const router = useRouter();
+  const router = useReleaseRouter();
   const [data, setData] = useState<PitcherDetail | null>(null);
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    fetch(
+    releaseFetch(
       `/api/v1/players/${encodeURIComponent(id)}/pitching?role=${encodeURIComponent(role)}&window=${encodeURIComponent(window)}`,
       { signal: controller.signal, cache: "no-store" },
     )

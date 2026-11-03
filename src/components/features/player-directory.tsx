@@ -1,9 +1,11 @@
 "use client";
+import { releaseFetch } from "@/components/release-provider";
 import { Skeleton } from "@/components/skeleton";
 import { formatKst } from "@/ui/format";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import Link from "@/components/release-provider";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useReleaseRouter } from "@/components/release-provider";
+import { useSearchParams } from "next/navigation";
 import {
   directoryQuery,
   directoryResponse,
@@ -15,13 +17,20 @@ const roles: Record<string, string> = {
   reliever: "불펜",
 };
 const teamName = (id: string) =>
-  `샘플 ${String.fromCharCode(65 + Number(id.split("_")[1]))}팀`;
+  /^sample_[0-9]$/.test(id)
+    ? `샘플 ${String.fromCharCode(65 + Number(id.split("_")[1]))}팀`
+    : `DEMO ${id}`;
 export function PlayerDirectory() {
   return <Directory />;
 }
 function Directory() {
-  const params = useSearchParams();
-  const router = useRouter();
+  const rawParams = useSearchParams();
+  const params = useMemo(() => {
+    const values = new URLSearchParams(rawParams);
+    values.delete("releaseId");
+    return values;
+  }, [rawParams]);
+  const router = useReleaseRouter();
   const queryString = params.toString();
   const hasDuplicates =
     new Set(params.keys()).size !== [...params.keys()].length;
@@ -38,6 +47,7 @@ function Directory() {
   const [previousQuery, setPreviousQuery] = useState(queryString);
   const resultHeading = useRef<HTMLDivElement>(null);
   const moveToResults = useRef(false);
+  const restoreScroll = useRef<number | null>(null);
   if (previousQuery !== queryString) {
     setPreviousQuery(queryString);
     setSearch(params.get("q") ?? "");
@@ -58,6 +68,7 @@ function Directory() {
     else next.delete(key);
     if (key !== "page") next.delete("page");
     moveToResults.current = key === "page";
+    restoreScroll.current = key === "page" ? null : window.scrollY;
     // Commit the pending name together with a filter change, including fast taps.
     if (
       key !== "q" &&
@@ -83,7 +94,7 @@ function Directory() {
     if (!valid) {
       return;
     }
-    fetch(`/api/v1/player-directory?${queryString}`, {
+    releaseFetch(`/api/v1/player-directory?${queryString}`, {
       cache: "no-store",
       signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15000)]),
     })
@@ -148,13 +159,22 @@ function Directory() {
       /* Storage may be unavailable; browser history still works. */
     }
   }, [result, queryString]);
+  useLayoutEffect(() => {
+    if (result && restoreScroll.current !== null) {
+      window.scrollTo(0, restoreScroll.current);
+      restoreScroll.current = null;
+    }
+  }, [result]);
   const value = (key: string, fallback = "") => params.get(key) ?? fallback;
   return (
     <>
       <div className="page-heading">
         <span className="badge">DEMO</span>
         <h1>선수 탐색</h1>
-        <p>가상 선수 150명 · 정규시즌 · 실제 공식 기록이 아닙니다.</p>
+        <p>
+          가상 선수 {result?.playerCount ?? "…"}명 · 정규시즌 · 실제 공식 기록이
+          아닙니다.
+        </p>
       </div>
       <section
         className="panel directory-filters"
@@ -195,9 +215,15 @@ function Directory() {
               onChange={(e) => change("team", e.target.value)}
             >
               <option value="">전체 팀</option>
-              {Array.from({ length: 10 }, (_, i) => (
-                <option key={i} value={`sample_${i}`}>
-                  {teamName(`sample_${i}`)}
+              {(
+                result?.teams ??
+                Array.from({ length: 10 }, (_, i) => ({
+                  teamId: `sample_${i}`,
+                  name: teamName(`sample_${i}`),
+                }))
+              ).map((team) => (
+                <option key={team.teamId} value={team.teamId}>
+                  {team.name}
                 </option>
               ))}
             </select>
@@ -352,10 +378,12 @@ function Directory() {
         DEMO는 2026 정규시즌만 지원합니다. 시즌 출전 선수만 탐색할 수 있습니다.
       </p>
       <p className="directory-note">
-        부분 데이터: OPS 필수 항목(HBP·SF)이 없어 OPS는 미제공입니다. 결측
-        기록은 0으로 대체하지 않습니다. 점수는 역할별 모델이며 역할을 선택해
-        비교하세요. 팀 필터 후에도 전체 기세 점수입니다. 기세 표본은 전체 팀
-        최근 N출전/역할 등판이므로 위 기록 표본과 다를 수 있습니다.
+        {result?.source === "demo-file-source"
+          ? "파일 게시 DEMO: 제공된 항목으로 통계를 계산합니다. 누락 항목은 N/A입니다."
+          : "부분 데이터: OPS 필수 항목(HBP·SF)이 없어 OPS는 미제공입니다."}{" "}
+        결측 기록은 0으로 대체하지 않습니다. 점수는 역할별 모델이며 역할을
+        선택해 비교하세요. 팀 필터 후에도 전체 기세 점수입니다. 기세 표본은 전체
+        팀 최근 N출전/역할 등판이므로 위 기록 표본과 다를 수 있습니다.
       </p>
       <div ref={resultHeading} tabIndex={-1} role="status" aria-live="polite">
         {!error && !result

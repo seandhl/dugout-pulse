@@ -48,3 +48,16 @@ it("suspends data publication while retaining legal and health access", () => {
     ).toBe("1");
   }
 });
+
+it("pins release transport without rewriting to a client supplied Host", () => {
+  const response = proxy(
+    new NextRequest("https://example.invalid/players?releaseId=synthetic_v2", {
+      headers: { host: "untrusted.invalid" },
+    }),
+  );
+  expect(response.headers.get("x-middleware-rewrite")).toBeNull();
+  expect(response.headers.get("x-middleware-next")).toBe("1");
+  expect(response.headers.get("x-middleware-request-x-pulse-release")).toBe(
+    "synthetic_v2",
+  );
+});

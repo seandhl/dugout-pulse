@@ -1,4 +1,9 @@
-import Link from "next/link";
+import { publicationIdentity } from "@/server/repositories/publication";
+import {
+  withPagePublication,
+  withoutReleaseQuery,
+} from "@/server/repositories/page-publication";
+import Link from "@/components/release-provider";
 import { boardQuery } from "@/contracts/ranking-boards";
 import { pipeline } from "@/server/ingest/pipeline";
 import { selectRankingBoards } from "@/server/reads/ranking-boards";
@@ -17,7 +22,7 @@ const tips: Record<string, string> = {
   OutsPerStart: "선발 등판당 기록 아웃 수",
   HRRate: "피홈런율: HR/BF",
 };
-export default async function Page({
+async function Page({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -63,6 +68,11 @@ export default async function Page({
         </p>
       </div>
       <form className="panel directory-filters" action="/rankings">
+        <input
+          type="hidden"
+          name="releaseId"
+          value={publicationIdentity().releaseId}
+        />
         <label>
           시즌
           <input
@@ -307,5 +317,11 @@ export default async function Page({
         </section>
       ))}
     </>
+  );
+}
+
+export default function BoundPage(props: Parameters<typeof Page>[0]) {
+  return withPagePublication(() =>
+    Page({ ...props, searchParams: withoutReleaseQuery(props.searchParams) }),
   );
 }

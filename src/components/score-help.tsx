@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import Link from "@/components/release-provider";
 import { Dialog } from "radix-ui";
 export function ScoreHelp() {
   return (

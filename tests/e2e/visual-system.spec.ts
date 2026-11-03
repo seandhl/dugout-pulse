@@ -5,7 +5,7 @@ const screens = [
   ["home", "/"],
   ["directory", "/players"],
   ["detail", "/players/demo_0_00"],
-  ["rankings", "/rankings"],
+  ["rankings", "/rankings?date=2026-11-03"],
   ["compare", "/compare?players=demo_0_00,demo_0_03"],
 ] as const;
 
@@ -75,6 +75,8 @@ for (const width of [320, 375, 768, 1440]) {
         expect(smallTargets, path).toEqual([]);
         const screenshotOptions = {
           fullPage: true,
+          // Developer tooling is not part of the product baseline.
+          style: "nextjs-portal { display: none !important; }",
           animations: "disabled" as const,
           mask: [page.locator("nextjs-portal")],
         };
@@ -82,7 +84,7 @@ for (const width of [320, 375, 768, 1440]) {
         // System fonts render differently by OS. The reviewed baseline is macOS;
         // other platforms still run every assertion and retain review captures.
         if (process.platform === "darwin") {
-          await expect(page).toHaveScreenshot(filename, screenshotOptions);
+          await expect.soft(page).toHaveScreenshot(filename, screenshotOptions);
         } else {
           await testInfo.attach(filename, {
             body: await page.screenshot(screenshotOptions),

@@ -1,4 +1,5 @@
 import "server-only";
+import { selectedPublication } from "../repositories/publication";
 import { DatabaseSync } from "node:sqlite";
 import { resolve } from "node:path";
 import { readDemo, verifiedDemoHash } from "../db/demo";
@@ -12,6 +13,8 @@ const snapshots = new WeakMap<
 >();
 export function readHome(query: z.infer<typeof homeQuery>) {
   const f = readDemo();
+  const release = selectedPublication();
+  if (release) return release.homes[`${query.role}/${query.window}`];
   let cache = snapshots.get(f);
   if (!cache) snapshots.set(f, (cache = new Map()));
   const key = `${query.role}/${query.window}`;

@@ -59,6 +59,7 @@ export const metaSchema = z
     competition: z.enum(["regular", "postseason", "allstar", "exhibition"]),
     lastUpdatedAt: z.iso.datetime().nullable(),
     releaseId: id.nullable(),
+    revision: z.number().int().nonnegative().optional(),
   })
   .strict();
 export const paginationSchema = z

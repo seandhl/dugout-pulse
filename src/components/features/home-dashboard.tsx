@@ -1,5 +1,6 @@
 "use client";
-import Link from "next/link";
+import { releaseFetch } from "@/components/release-provider";
+import Link from "@/components/release-provider";
 import { useEffect, useState } from "react";
 import { Tabs } from "radix-ui";
 import { homeResponse, type HomeData } from "@/contracts/home";
@@ -15,7 +16,7 @@ export function HomeDashboard() {
   const [search, setSearch] = useState("");
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`/api/v1/home?role=${role}&window=${windowSize}`, {
+    releaseFetch(`/api/v1/home?role=${role}&window=${windowSize}`, {
       cache: "no-store",
       signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15000)]),
     })

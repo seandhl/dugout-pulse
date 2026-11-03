@@ -43,5 +43,5 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  return observeRequest(() => handleGET(request, { params }));
+  return observeRequest(() => handleGET(request, { params }), request);
 }

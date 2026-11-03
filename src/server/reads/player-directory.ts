@@ -131,6 +131,8 @@ export function selectDirectory(
   const pages = Math.max(1, Math.ceil(players.length / 20));
   const page = Math.min(Number(query.page), pages);
   return {
+    teams: f.teams,
+    playerCount: f.players.length,
     players: players.slice((page - 1) * 20, page * 20),
     total: players.length,
     page,

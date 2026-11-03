@@ -3,7 +3,16 @@ import {
   type MomentumSnapshot,
 } from "../reads/momentum";
 import "server-only";
-import { assertCanonicalPublication } from "../repositories/publication";
+import {
+  assertCanonicalPublication,
+  selectedPublication,
+  baselineSelected,
+} from "../repositories/publication";
+import {
+  projectRelease,
+  releaseHash,
+  type Release,
+} from "../repositories/release-projection";
 import { scopeView } from "../reads/scope";
 import { publishedBatting } from "../reads/batting";
 import { mkdir, open, readFile, rename, rm } from "node:fs/promises";
@@ -61,6 +70,13 @@ type Batch = {
   publishedRevision?: number;
 };
 export type PipelineState = {
+  publication?: {
+    releaseId: string;
+    revision: number;
+    asOf: string;
+    hash: string;
+  };
+  releases?: Record<string, { release: Release; hash: string }>;
   momentumSnapshots?: Record<string, MomentumSnapshot>;
   momentumCurrent?: string[];
   version: 1;
@@ -123,6 +139,7 @@ export function createPipeline(
   directory = path.join(process.cwd(), ".demo", "pipeline"),
   rights: DemoRights = demoRights,
   publicStoreGuard: () => void = () => {},
+  integrated = false,
 ) {
   const statePath = path.join(directory, "state.json");
   let publicCache:
@@ -166,7 +183,19 @@ export function createPipeline(
       const state = await read();
       const started = performance.now();
       const previousRuns = state.runs?.length ?? 0;
+      const previousRevision = state.revision;
       const result = await work(state);
+      if (integrated && state.revision !== previousRevision) {
+        const release = projectRelease(state);
+        const hash = releaseHash(release);
+        (state.releases ??= {})[release.releaseId] = { release, hash };
+        state.publication = {
+          releaseId: release.releaseId,
+          revision: release.revision,
+          asOf: release.asOf,
+          hash,
+        };
+      }
       for (const run of (state.runs ?? []).slice(previousRuns))
         run.durationMs = Math.round(performance.now() - started);
       const handle = await open(temporary, "wx", 0o600);
@@ -220,7 +249,13 @@ export function createPipeline(
   }
   async function readPublicState() {
     publicStoreGuard();
-    rightsCheck(); // Always run before any cache lookup, including revocation.
+    rightsCheck();
+    if (integrated) {
+      const release = selectedPublication(statePath);
+      if (release) return release.state;
+      if (baselineSelected()) return empty();
+    }
+    // Always run before any cache lookup, including revocation.
     const currentRights = JSON.stringify(rights);
     let signature: string;
     try {
@@ -723,4 +758,5 @@ export const pipeline = createPipeline(
   ),
   demoRights,
   assertCanonicalPublication,
+  true,
 );

@@ -66,3 +66,9 @@ R10 종료 조건: 모든 projection adapter와 요청 고정, 공개 releaseId/
 로그: `reports/r10/`. E2E 개발 서버에 stream errored 로그 1건이 있어 서버 무오류로 주장하지 않는다. 외부 데이터·설치·계정·배포·push·커밋은 수행하지 않았다.
 
 화면 확인: `pnpm dev` 후 `/`, `/players`, `/players/demo_0_00`, `/compare?players=demo_0_00,demo_0_01`, `/rankings`를 조회한다. 연결되지 않은 기존 파일 게시가 있으면 공개 조회가 차단되는 것이 현재 설계다. 기존 파일을 삭제해서 해제하지 않는다. 차단 시 API 503/no-store 및 한국어 오류 메시지를 확인할 수 있다. 실제 게시/정정/rollback 조작은 테스트의 임시 저장소에서만 수행했다.
+
+## PR #1 보완 — 2026-11-04
+
+위의 미연결 게시 일괄 차단은 과거 구현 기록이다. 현재 변경은 `release-projection.ts`의 완전한 DEMO projection이 존재할 때만 guard를 통과시킨다. 미연결·손상·미지원 게시의 503은 유지한다. 상세 설계·검증·남은 범위는 [PR #1 검증 수정 기록](PR1_VERIFICATION_FIX.md)을 따른다.
+
+ADR-R10-IMPLEMENTATION 상태: **2026 정규시즌 자체 제작 DEMO 범위 채택**. 별도 파일과 pointer를 추가하는 제안 대신 기존 lock/fsync/rename 트랜잭션 안의 `state.json`에 불변 `releases`와 `publication` manifest를 함께 저장한다. 두 저장소를 순차 교체하지 않으며 SQLite는 게시 전 고정 합성 릴리스 adapter로만 사용한다. 게시 이후 각 projection에 SQLite 데이터를 보충하지 않는다.

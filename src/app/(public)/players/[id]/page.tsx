@@ -1,3 +1,7 @@
+import {
+  withPagePublication,
+  withoutReleaseQuery,
+} from "@/server/repositories/page-publication";
 import { formatKst } from "@/ui/format";
 import { pipeline } from "@/server/ingest/pipeline";
 import { PitcherDetailView } from "@/components/features/pitcher-detail";
@@ -18,7 +22,7 @@ export async function generateMetadata({
   };
 }
 export const dynamic = "force-dynamic";
-export default async function PlayerPage({
+async function PlayerPage({
   params,
   searchParams,
 }: {
@@ -150,5 +154,14 @@ export default async function PlayerPage({
         있습니다.
       </p>
     </>
+  );
+}
+
+export default function BoundPage(props: Parameters<typeof PlayerPage>[0]) {
+  return withPagePublication(() =>
+    PlayerPage({
+      ...props,
+      searchParams: withoutReleaseQuery(props.searchParams),
+    }),
   );
 }

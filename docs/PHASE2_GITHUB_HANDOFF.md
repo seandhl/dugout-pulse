@@ -209,3 +209,7 @@ PR은 draft로 생성하고 main은 자동 병합하지 않는다. 번호별 원
 - `tests/unit/publication.test.ts`
 - `tests/unit/ranking-boards.test.ts`
 - `docs/PHASE2_GITHUB_HANDOFF.md` (본 문서)
+
+## PR #1 후속 수정 (2026-11-04)
+
+위 실패 기록은 최초 인계 당시 결과다. R10 guard를 유지하면서 완전한 통합 DEMO release projection과 요청/브라우저 릴리스 고정, 정정·롤백·실패 복구 검증을 추가했다. 새 결과 및 잔여 수동 게이트는 [PR1_VERIFICATION_FIX.md](PR1_VERIFICATION_FIX.md)에 기록한다. 이전 결과를 이번 실행 결과로 취급하지 않는다.

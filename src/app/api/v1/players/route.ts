@@ -10,5 +10,5 @@ function handleGET(request: Request) {
 }
 
 export async function GET(request: Request) {
-  return observeRequest(() => handleGET(request));
+  return observeRequest(() => handleGET(request), request);
 }

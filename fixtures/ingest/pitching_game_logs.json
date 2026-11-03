@@ -10,6 +10,13 @@
     "innings": "6.2",
     "h": 3,
     "er": 1,
-    "so": 7
+    "so": 7,
+    "bf": 24,
+    "bb": 1,
+    "ibb": 0,
+    "hbp": 0,
+    "hr": 0,
+    "r": 1,
+    "walk_definition": "includes_ibb"
   }
 ]

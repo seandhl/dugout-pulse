@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/release-provider";
 export function EmptyState({
   title,
   description,

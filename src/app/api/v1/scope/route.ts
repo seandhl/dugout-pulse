@@ -1,10 +1,11 @@
+import { queryInput } from "@/server/http/response";
 import { observeRequest } from "@/server/observability/runtime";
 import { pipeline } from "@/server/ingest/pipeline";
 import { scopeInput, kstDate } from "@/server/reads/scope";
 import { failure } from "@/server/ingest/service";
 export const runtime = "nodejs";
 async function handleGET(request: Request) {
-  const values = Object.fromEntries(new URL(request.url).searchParams);
+  const values = queryInput(request);
   const parsed = scopeInput.safeParse({
     season: Number(kstDate(new Date().toISOString()).slice(0, 4)),
     ...values,
@@ -24,5 +25,5 @@ async function handleGET(request: Request) {
 }
 
 export async function GET(request: Request) {
-  return observeRequest(() => handleGET(request));
+  return observeRequest(() => handleGET(request), request);
 }

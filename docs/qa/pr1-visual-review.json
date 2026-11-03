@@ -1,0 +1,567 @@
+{
+  "date": "2026-11-04",
+  "review": "Agent reviewed old/candidate full-page montages for all 40 images; human/device review remains pending.",
+  "mode": "production Chromium macOS; same viewport/theme/assertions; no tolerance changes",
+  "images": [
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/compare-1440-dark-chromium-darwin.png",
+      "oldSize": [
+        1440,
+        8935
+      ],
+      "newSize": [
+        1440,
+        3927
+      ],
+      "oldSha256": "f33ca20dd22db4bdb450fb4d9c0451eb4a387b35af45a1eb8f911eb92d266fe8",
+      "newSha256": "aad28a5c9fb839299caa33f2de1ae207b9ebc1b506c1547170466098366df9f4",
+      "reason": "기존 R16 15명 선택기/2슬롯/비교 근거; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/compare-1440-light-chromium-darwin.png",
+      "oldSize": [
+        1440,
+        8935
+      ],
+      "newSize": [
+        1440,
+        3927
+      ],
+      "oldSha256": "e350e25394d9ed9a19be9ee7190f1ca16a24526693c721a26b0c72a4255db962",
+      "newSha256": "f671c37c73fac39f71c39485af3dc804c2f4c1f2f0995174704915383f3072d1",
+      "reason": "기존 R16 15명 선택기/2슬롯/비교 근거; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/compare-320-dark-chromium-darwin.png",
+      "oldSize": [
+        320,
+        21859
+      ],
+      "newSize": [
+        320,
+        7152
+      ],
+      "oldSha256": "b4abd6ac32b4e07337f38cade804777349fd42de90680ed2c4d6b66edbd650e1",
+      "newSha256": "513982b6de7bdde80e5620622ee108bf58e017afeca36789040c9e9368730684",
+      "reason": "기존 R16 15명 선택기/2슬롯/비교 근거; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/compare-320-light-chromium-darwin.png",
+      "oldSize": [
+        320,
+        21859
+      ],
+      "newSize": [
+        320,
+        7152
+      ],
+      "oldSha256": "574beacdd48c047ad8e11ebf5965353d9e1c0b02a03efa32871d4fc9b2ae7eda",
+      "newSha256": "31c81b12a9f4121df0d72e31baba33127b073182225712c80980252b94323a48",
+      "reason": "기존 R16 15명 선택기/2슬롯/비교 근거; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/compare-375-dark-chromium-darwin.png",
+      "oldSize": [
+        375,
+        17574
+      ],
+      "newSize": [
+        375,
+        6852
+      ],
+      "oldSha256": "d2b74917532931e4e4732b01c2b1479827c8df4798f89307d4b7f916014f6893",
+      "newSha256": "bc43061d24c45cb60abbde0c4299523255da5cc89af7006b8cc9d844b54cbf12",
+      "reason": "기존 R16 15명 선택기/2슬롯/비교 근거; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/compare-375-light-chromium-darwin.png",
+      "oldSize": [
+        375,
+        17574
+      ],
+      "newSize": [
+        375,
+        6852
+      ],
+      "oldSha256": "ff7de39d1be6a791aed892bd02175379d954aea667653ba61c3c6505faf06599",
+      "newSha256": "87dd144fda26d0e6ad50a46cdda0be8cefc3ef69892b985337236f9ff49aeca3",
+      "reason": "기존 R16 15명 선택기/2슬롯/비교 근거; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/compare-768-dark-chromium-darwin.png",
+      "oldSize": [
+        768,
+        9233
+      ],
+      "newSize": [
+        768,
+        4191
+      ],
+      "oldSha256": "9daea8ca2e805473f54c718b37ce8c4d1b4ac828dcf0424432bd0bd31206ca89",
+      "newSha256": "59b8e2a8b4d322f16f1c60982adfc5a3f4b459495ed018a38ffe23b45f539855",
+      "reason": "기존 R16 15명 선택기/2슬롯/비교 근거; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/compare-768-light-chromium-darwin.png",
+      "oldSize": [
+        768,
+        9233
+      ],
+      "newSize": [
+        768,
+        4191
+      ],
+      "oldSha256": "35affb2831146ac0385e22525f0475663df610089ddaa7b556a30e271e1d5658",
+      "newSha256": "d275b354f09ab3830f1f9d0027c756b2d70d7dd4e7cbdf5364917fb1385575cd",
+      "reason": "기존 R16 15명 선택기/2슬롯/비교 근거; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/detail-1440-dark-chromium-darwin.png",
+      "oldSize": [
+        1440,
+        3334
+      ],
+      "newSize": [
+        1440,
+        3596
+      ],
+      "oldSha256": "a770185c269e58776f46f3855ba4532159ce40968d8445f5fb5bcf83383f637e",
+      "newSha256": "697e7a404867d76e3a89807bfc609623cde44cbb987f46efc5b6be2bef1130cd",
+      "reason": "기준시각·비교 기준·달력 공백과 이동 창 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/detail-1440-light-chromium-darwin.png",
+      "oldSize": [
+        1440,
+        3334
+      ],
+      "newSize": [
+        1440,
+        3596
+      ],
+      "oldSha256": "4994d89fe7e1f11fc895da609f209013ce020460a96ad4b74649a5040974b58d",
+      "newSha256": "f86bd6735d32d04703f7177b65e58bffd4962061db1a33f7cc67a6b7109ce8f1",
+      "reason": "기준시각·비교 기준·달력 공백과 이동 창 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/detail-320-dark-chromium-darwin.png",
+      "oldSize": [
+        320,
+        5209
+      ],
+      "newSize": [
+        320,
+        5852
+      ],
+      "oldSha256": "28690fa47c222160be0a0338cb34d503f632c02655ec1d579144f414a6853813",
+      "newSha256": "ce4b684c78e7396954c8fe323e85a2d8213d5b308e3695b86778c84a72fecaf8",
+      "reason": "기준시각·비교 기준·달력 공백과 이동 창 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/detail-320-light-chromium-darwin.png",
+      "oldSize": [
+        320,
+        5209
+      ],
+      "newSize": [
+        320,
+        5852
+      ],
+      "oldSha256": "f918815afd711ebe61ebc540321893dad03fa754a345d87da94d2e8291c95b59",
+      "newSha256": "785307644a29b5f41821327e5a9bd09a05654ed18173fbad85571ac21aee214a",
+      "reason": "기준시각·비교 기준·달력 공백과 이동 창 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/detail-375-dark-chromium-darwin.png",
+      "oldSize": [
+        375,
+        4706
+      ],
+      "newSize": [
+        375,
+        5249
+      ],
+      "oldSha256": "3e39abb079b4ff3b2752e3fe97db87d6898827d4e0cd90a03413b1707bd6cbf3",
+      "newSha256": "22c858d626dc7d1a9d79e8d140ac02d9baeafd70eb98361a69ae491325092ee3",
+      "reason": "기준시각·비교 기준·달력 공백과 이동 창 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/detail-375-light-chromium-darwin.png",
+      "oldSize": [
+        375,
+        4706
+      ],
+      "newSize": [
+        375,
+        5249
+      ],
+      "oldSha256": "9b8084673ccc50260cea25e9367fc0f59d1a0bef34e5fbfc138f52f5b9a43de8",
+      "newSha256": "9c5bf50f243f747652456638818792765bb7c8d6f5dcd097819258108cb11a3b",
+      "reason": "기준시각·비교 기준·달력 공백과 이동 창 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/detail-768-dark-chromium-darwin.png",
+      "oldSize": [
+        768,
+        3553
+      ],
+      "newSize": [
+        768,
+        3916
+      ],
+      "oldSha256": "328a0fae015a5251dfcce69a4a1bb7d4f0b5dc8298b6525b8dbfbd8c176137d0",
+      "newSha256": "ba9911ed58a21572baef2dcf8e51954fb2f73667327806f0e5ffc12739c41c06",
+      "reason": "기준시각·비교 기준·달력 공백과 이동 창 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/detail-768-light-chromium-darwin.png",
+      "oldSize": [
+        768,
+        3553
+      ],
+      "newSize": [
+        768,
+        3916
+      ],
+      "oldSha256": "fa43d291fa54e8b049fd8abacc7a426e1a079a5f2cbb2ba3d50b284c65c52b1c",
+      "newSha256": "09bc3cdd6251e25db9e527c7b26c282281c750d9523f911acada2eaf2f11e309",
+      "reason": "기준시각·비교 기준·달력 공백과 이동 창 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/directory-1440-dark-chromium-darwin.png",
+      "oldSize": [
+        1440,
+        4364
+      ],
+      "newSize": [
+        1440,
+        5156
+      ],
+      "oldSha256": "e049c16456eb825f95b7d6309423fa3f1a0ab85ae0049243a6a29e0560e397c1",
+      "newSha256": "172838ff389bd5864a4b71f6311f7ff81bdb461303edab557dfd26e02cdd55a3",
+      "reason": "기존 Phase 2 fieldset/표본 필터 및 기록 범위 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/directory-1440-light-chromium-darwin.png",
+      "oldSize": [
+        1440,
+        4364
+      ],
+      "newSize": [
+        1440,
+        5156
+      ],
+      "oldSha256": "2e05d9b13d06ad574bb95ce62dd01967a9c1f03d9668d68d45b70e376c832405",
+      "newSha256": "b74928e2b5357f74471fe4c59d63fcb85c27ce8547847a96018a62ed8d92477b",
+      "reason": "기존 Phase 2 fieldset/표본 필터 및 기록 범위 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/directory-320-dark-chromium-darwin.png",
+      "oldSize": [
+        320,
+        11797
+      ],
+      "newSize": [
+        320,
+        13114
+      ],
+      "oldSha256": "15a09a6cc8910309b98dddfab5a32f5c564959d22287b5c7463e6139d2b69e86",
+      "newSha256": "b50d494043165ec14316e036c6da715f13edec0fb74fb7308ba80bd8628ae838",
+      "reason": "기존 Phase 2 fieldset/표본 필터 및 기록 범위 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/directory-320-light-chromium-darwin.png",
+      "oldSize": [
+        320,
+        11797
+      ],
+      "newSize": [
+        320,
+        13114
+      ],
+      "oldSha256": "4dc6ebb85846c682d6d32514344db71c0b69fb95179bb6d4fe1986740e0fca03",
+      "newSha256": "edeb85321a0624556a115f46117bb1f139d9383d5adf7a54fe9f623b3d705973",
+      "reason": "기존 Phase 2 fieldset/표본 필터 및 기록 범위 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/directory-375-dark-chromium-darwin.png",
+      "oldSize": [
+        375,
+        11085
+      ],
+      "newSize": [
+        375,
+        12189
+      ],
+      "oldSha256": "44747e1bd258bc805765a409ca117304daba200269164458e83302b79b3ecef2",
+      "newSha256": "3c8149c5f61e86970f96fb13a16a1af75bba4b6e0d145631c01e468b00b8b480",
+      "reason": "기존 Phase 2 fieldset/표본 필터 및 기록 범위 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/directory-375-light-chromium-darwin.png",
+      "oldSize": [
+        375,
+        11085
+      ],
+      "newSize": [
+        375,
+        12189
+      ],
+      "oldSha256": "a1fda99ef767d1302fec2ba15242ab228fcf333ebfde23333f274cd2e1e08b1d",
+      "newSha256": "38f3b49ad5e148cdb6807c1086dfc43500f42251c7744f391d6d0187bdc699bc",
+      "reason": "기존 Phase 2 fieldset/표본 필터 및 기록 범위 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/directory-768-dark-chromium-darwin.png",
+      "oldSize": [
+        768,
+        6176
+      ],
+      "newSize": [
+        768,
+        6969
+      ],
+      "oldSha256": "4f587d295df0a8b5ae3e2c401347d7ebf082064dc4231aafac727ad42b912868",
+      "newSha256": "39e8dad5bb35b6d3d30b19dd671db602613940873c196740cbf035d7ffaeca09",
+      "reason": "기존 Phase 2 fieldset/표본 필터 및 기록 범위 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/directory-768-light-chromium-darwin.png",
+      "oldSize": [
+        768,
+        6176
+      ],
+      "newSize": [
+        768,
+        6969
+      ],
+      "oldSha256": "2adff9d6700af611b0382d822b92013b3ebff98c8a48c437616365646f9effb1",
+      "newSha256": "5faae29bfc31a8fd38158a5b56f1950c0603f15039b91cee4c17aacd5777cf81",
+      "reason": "기존 Phase 2 fieldset/표본 필터 및 기록 범위 설명; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/home-1440-dark-chromium-darwin.png",
+      "oldSize": [
+        1440,
+        2529
+      ],
+      "newSize": [
+        1440,
+        2619
+      ],
+      "oldSha256": "d54710cc8ca27b640ca415c08bc3dfb2cddf0ad4d51d89dbca8ea2d3133e87b7",
+      "newSha256": "97ad2d966e3e113ba651a0bf42c68dc0c2cf9e9bb292ce6b6188ef57e7a37e1b",
+      "reason": "최근 출전 기세·출전/등판 표본·변화량 N/A·점수 해석 문구; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/home-1440-light-chromium-darwin.png",
+      "oldSize": [
+        1440,
+        2529
+      ],
+      "newSize": [
+        1440,
+        2619
+      ],
+      "oldSha256": "7dcbe716119d9b92db3cdb21d4564bea3379b7232db57b27166742bbcf6f9b4c",
+      "newSha256": "84794ecde3795b365e44ea98b4af7cfa616399e54ca9cbf9d2e44b3b09148bcc",
+      "reason": "최근 출전 기세·출전/등판 표본·변화량 N/A·점수 해석 문구; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/home-320-dark-chromium-darwin.png",
+      "oldSize": [
+        320,
+        4703
+      ],
+      "newSize": [
+        320,
+        4992
+      ],
+      "oldSha256": "8385d21e8e03789a5c3c507c9918049e73d7de812f747e3bb64d23c3f473635d",
+      "newSha256": "950afc155ab6d53d69c81abd110ea3326cdd22adfb84b9dcc3f898034ca53be4",
+      "reason": "최근 출전 기세·출전/등판 표본·변화량 N/A·점수 해석 문구; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/home-320-light-chromium-darwin.png",
+      "oldSize": [
+        320,
+        4703
+      ],
+      "newSize": [
+        320,
+        4992
+      ],
+      "oldSha256": "98b7726be57b955c5b5459109ff99278b64846b2c15f8913a1c96dbd1160e778",
+      "newSha256": "75bdb93f2a25f8fce50b15600eb182db2d291749d131dc129db334af56867451",
+      "reason": "최근 출전 기세·출전/등판 표본·변화량 N/A·점수 해석 문구; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/home-375-dark-chromium-darwin.png",
+      "oldSize": [
+        375,
+        4579
+      ],
+      "newSize": [
+        375,
+        4803
+      ],
+      "oldSha256": "8181b726f99e01d5277d777c1b8dacdd76fa2691400475f9f74c8cfa07e206e3",
+      "newSha256": "43d3f35ae7f08e52b518e01f3b7aa00ec0174040871ec59bafc1383f8aee8544",
+      "reason": "최근 출전 기세·출전/등판 표본·변화량 N/A·점수 해석 문구; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/home-375-light-chromium-darwin.png",
+      "oldSize": [
+        375,
+        4579
+      ],
+      "newSize": [
+        375,
+        4803
+      ],
+      "oldSha256": "b92c01b9a47c4f13a1a44d79b6b63537b645cd66159e09838fe8e386572cd4c5",
+      "newSha256": "4c7e58ee311d6960d7db05a9b4099bafa97b86f0fa4d2e1eb60e05b2ab586c0c",
+      "reason": "최근 출전 기세·출전/등판 표본·변화량 N/A·점수 해석 문구; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/home-768-dark-chromium-darwin.png",
+      "oldSize": [
+        768,
+        3314
+      ],
+      "newSize": [
+        768,
+        3447
+      ],
+      "oldSha256": "2d7d511bfedbc6a64ef4aba19ac5df0aa0464413eef32eb507c41450bad63555",
+      "newSha256": "35454ef4648de91c293610780db6d6f2c0495d5db266b3a63e382a6ba7f9044e",
+      "reason": "최근 출전 기세·출전/등판 표본·변화량 N/A·점수 해석 문구; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/home-768-light-chromium-darwin.png",
+      "oldSize": [
+        768,
+        3314
+      ],
+      "newSize": [
+        768,
+        3447
+      ],
+      "oldSha256": "12ce32afb9e94508dfc902d441d418acfd3af03d88323a68c84538e358bd7ff0",
+      "newSha256": "69ae0878b41fcba5cf2fe36135df6656eeedb3dcc355fa6df17e1f74f3546305",
+      "reason": "최근 출전 기세·출전/등판 표본·변화량 N/A·점수 해석 문구; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/rankings-1440-dark-chromium-darwin.png",
+      "oldSize": [
+        1440,
+        1916
+      ],
+      "newSize": [
+        1440,
+        1942
+      ],
+      "oldSha256": "e6a4974185e7eee6448940fe2d0cec5e811e9436cfd4a1526adf51ddaa74779e",
+      "newSha256": "8da3c0ed66140711c177b63b74f07a389ec3bb2f6ed009e1584a65341bc776e8",
+      "reason": "기세 점수 해석 안내, fixture 기준일 고정; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/rankings-1440-light-chromium-darwin.png",
+      "oldSize": [
+        1440,
+        1916
+      ],
+      "newSize": [
+        1440,
+        1942
+      ],
+      "oldSha256": "473bd91b0b4a274c91729fd75155ce8300b466e3b8054ef578dfe440d793d998",
+      "newSha256": "54d4683da6ea8761ec40acddb72aea9abfecc02ce0918eddae8a8c9d11d4a120",
+      "reason": "기세 점수 해석 안내, fixture 기준일 고정; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/rankings-320-dark-chromium-darwin.png",
+      "oldSize": [
+        320,
+        3264
+      ],
+      "newSize": [
+        320,
+        3369
+      ],
+      "oldSha256": "4d7a428d458d46a01729f4c592c4c8f912122f521e4d04232500fba16f383dc1",
+      "newSha256": "d48036b48b57758ad04bf53c20e5d8c162383f37e36acbde7ad3208b0ac46c10",
+      "reason": "기세 점수 해석 안내, fixture 기준일 고정; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/rankings-320-light-chromium-darwin.png",
+      "oldSize": [
+        320,
+        3264
+      ],
+      "newSize": [
+        320,
+        3369
+      ],
+      "oldSha256": "179f052f69b0ae5a4046298b9ff60c894fcd0b9aa7e51cd158df45f02c93cbe8",
+      "newSha256": "3960e361b9fd5a4bbf53a248ad25e76b6ce365df6d2dff3ced1234e12682c6fc",
+      "reason": "기세 점수 해석 안내, fixture 기준일 고정; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/rankings-375-dark-chromium-darwin.png",
+      "oldSize": [
+        375,
+        2974
+      ],
+      "newSize": [
+        375,
+        3053
+      ],
+      "oldSha256": "f8c34d002f933e0fbb05509c069b2daa3416ab357b8dbc391e0d8a190a57faf1",
+      "newSha256": "c90e24a6959867d1a5bfbaaad5d27203652918be73d9f3ad3118a61f58cd317f",
+      "reason": "기세 점수 해석 안내, fixture 기준일 고정; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/rankings-375-light-chromium-darwin.png",
+      "oldSize": [
+        375,
+        2974
+      ],
+      "newSize": [
+        375,
+        3053
+      ],
+      "oldSha256": "32c0ea977c15aea20a704e4e5ed86edcb61676324dd58dde22b9cba7ed1eb81f",
+      "newSha256": "1b5c7daaf5dc0019d1937833eb6e8bb00e3313a0cd358fae3a129717c4661071",
+      "reason": "기세 점수 해석 안내, fixture 기준일 고정; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/rankings-768-dark-chromium-darwin.png",
+      "oldSize": [
+        768,
+        2181
+      ],
+      "newSize": [
+        768,
+        2234
+      ],
+      "oldSha256": "2beb7cd33c247bfe07f4eb6115cef7bcd14f8429f43f7580b190a74e3814e173",
+      "newSha256": "f6666c7022f6db5558dcb3163f68eb65cb258f42268a23eb8568c41cfdadc809",
+      "reason": "기세 점수 해석 안내, fixture 기준일 고정; 개발 표시기 제외"
+    },
+    {
+      "file": "tests/e2e/visual-system.spec.ts-snapshots/rankings-768-light-chromium-darwin.png",
+      "oldSize": [
+        768,
+        2181
+      ],
+      "newSize": [
+        768,
+        2234
+      ],
+      "oldSha256": "18a42897c8ef5df37b2f47d02af6cdf937c9615714a38bfca54236d4d2f60601",
+      "newSha256": "ea319a22db3e468612b7a0bfac6f178c740aa4bbfa60c2b53cc8117a7ec3c742",
+      "reason": "기세 점수 해석 안내, fixture 기준일 고정; 개발 표시기 제외"
+    }
+  ]
+}

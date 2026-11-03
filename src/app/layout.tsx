@@ -1,3 +1,6 @@
+import { baselineReleaseId } from "@/server/repositories/publication";
+import { headers } from "next/headers";
+import { ReleaseProvider } from "@/components/release-provider";
 import type { Metadata } from "next";
 import { Shell } from "@/components/shell";
 import "./globals.css";
@@ -11,13 +14,17 @@ export const metadata: Metadata = {
   description:
     "타자·선발·불펜의 흐름을 이해하는 한국어 야구 분석 서비스. DEMO 개발 미리보기.",
 };
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const releaseId =
+    (await headers()).get("x-pulse-release") ?? baselineReleaseId();
   return (
     <html lang="ko" suppressHydrationWarning>
-      <body>
-        <Shell>{children}</Shell>
+      <body data-release-id={releaseId}>
+        <ReleaseProvider releaseId={releaseId}>
+          <Shell>{children}</Shell>
+        </ReleaseProvider>
       </body>
     </html>
   );

@@ -1,8 +1,12 @@
+import {
+  withPagePublication,
+  withoutReleaseQuery,
+} from "@/server/repositories/page-publication";
 export const metadata = { alternates: { canonical: "/published" } };
 import { pipeline } from "@/server/ingest/pipeline";
 import { kstDate, scopeInput } from "@/server/reads/scope";
 export const dynamic = "force-dynamic";
-export default async function PublishedPage({
+async function PublishedPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -138,5 +142,14 @@ export default async function PublishedPage({
         <pre>{JSON.stringify(result.pipeline.runs, null, 2)}</pre>
       </details>
     </section>
+  );
+}
+
+export default function BoundPage(props: Parameters<typeof PublishedPage>[0]) {
+  return withPagePublication(() =>
+    PublishedPage({
+      ...props,
+      searchParams: withoutReleaseQuery(props.searchParams),
+    }),
   );
 }

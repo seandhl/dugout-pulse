@@ -1,7 +1,8 @@
 "use client";
 import { formatKst } from "@/ui/format";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Link from "@/components/release-provider";
+import { useReleaseRouter } from "@/components/release-provider";
+
 import { useState } from "react";
 import { DemoNotice, PlayerAvatarFallback } from "@/components/ui";
 import type { PlayerDetail } from "@/server/reads/player-detail";
@@ -16,7 +17,7 @@ export function DetailHeader({
   id: string;
   roleLabel: string;
 }) {
-  const router = useRouter();
+  const router = useReleaseRouter();
   const [message, setMessage] = useState("");
   return (
     <>

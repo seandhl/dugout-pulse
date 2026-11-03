@@ -410,3 +410,11 @@ R04 팀 범위 교정: `/api/v1/player-directory?team=...`의 games/ops/era/last
 ### 선수 탐색 표본 필터 (ADR-034)
 
 `/api/v1/player-directory`의 선택 `sample` 쿼리: 빈 값(기본 전체), `complete`(games=window), `short`(0<games<window), `unscored`(score=null). 기존 팀·역할·시즌 출전 범위를 적용한 뒤 표본 필터, 고정 정렬, 페이지 분할 순으로 처리한다. score는 기존 전체 팀 기세이며 표본 충족은 기세 적격과 다르다. 미지원 값은 400. 기존 응답 및 저장 스키마는 그대로이므로 DB 마이그레이션은 없다.
+
+## PR #1 통합 DEMO 릴리스 (additive)
+
+공개 데이터 API 성공 응답은 `X-Pulse-Release`, `X-Pulse-Revision`, `X-Pulse-As-Of` 및 최종 JSON bytes의 SHA-256 ETag를 제공한다. `Cache-Control: no-store`는 유지하며 조건부 304는 제공하지 않는다. metadata의 선택적 `revision` 필드와 선수 탐색의 선택적 `teams: {teamId, name}[]` 필드를 추가한다. 기존 DTO와 pagination/error 형태는 유지한다.
+
+`releaseId` 쿼리 또는 `X-Pulse-Release` 요청 헤더로 보존된 릴리스를 고정할 수 있다. 중복/형식 오류/헤더·쿼리 불일치는 400, 미연결/손상/알 수 없는 릴리스는 503이며 최신 내용으로 대체하지 않는다. 게시 후 기본 조회는 새 릴리스 전체를 제공하고, 고정한 과거 릴리스는 그대로 유지한다. 통합 게시는 2026 정규시즌의 완전한 자체 제작 DEMO 입력만 허용한다. 상세 내용은 [검증 수정 기록](PR1_VERIFICATION_FIX.md)을 따른다.
+
+선수 탐색의 선택적 `playerCount`는 필터 전 릴리스 선수 수다. 필터 결과 `total`과 구분한다. 화면은 file 게시 시 고정 합성 데모의 150명/샘플 팀/결측 안내를 재사용하지 않는다.

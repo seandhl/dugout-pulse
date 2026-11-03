@@ -5,6 +5,7 @@ export function queryInput(request: Request) {
   const params = new URL(request.url).searchParams;
   if (new Set(params.keys()).size !== [...params.keys()].length)
     throw new ApiError("BAD_INPUT", 400, "중복 쿼리는 허용하지 않습니다.");
+  params.delete("releaseId"); // Transport identity is validated/pinned before domain query parsing.
   return Object.fromEntries(params);
 }
 export async function respond(schema: z.ZodType, run: () => Promise<unknown>) {

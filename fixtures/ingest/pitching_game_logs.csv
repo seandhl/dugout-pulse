@@ -1,2 +1,2 @@
-season,competition,as_of,external_player_id,game_id,team_id,role,innings,h,er,so
-2026,regular,2026-10-31T21:00:00,demo_ext_2,demo_game_1,demo_team_2,STARTER,6.2,3,1,7
+season,competition,as_of,external_player_id,game_id,team_id,role,innings,h,er,so,bf,bb,ibb,hbp,hr,r,walk_definition
+2026,regular,2026-10-31T21:00:00,demo_ext_2,demo_game_1,demo_team_2,STARTER,6.2,3,1,7,24,1,0,0,0,1,includes_ibb

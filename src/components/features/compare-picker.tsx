@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/release-provider";
 import { useRef, useState } from "react";
 
 type Candidate = {

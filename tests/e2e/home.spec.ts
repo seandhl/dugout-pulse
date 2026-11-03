@@ -47,7 +47,8 @@ for (const width of [390, 1440]) {
       .replace("↗", "")
       .trim();
     await cards.first().click();
-    await expect(page).toHaveURL(new RegExp(`${href}$`));
+    expect(href).toBeTruthy();
+    await expect(page).toHaveURL(new URL(href!, page.url()).toString());
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(name);
   });
 }

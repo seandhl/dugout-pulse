@@ -1,5 +1,9 @@
+import {
+  withPagePublication,
+  withoutReleaseQuery,
+} from "@/server/repositories/page-publication";
 export const metadata = { alternates: { canonical: "/compare" } };
-import Link from "next/link";
+import Link from "@/components/release-provider";
 import { ComparePicker } from "@/components/features/compare-picker";
 import { readDemo } from "@/server/db/demo";
 import { compareQuery, selectComparison } from "@/server/reads/compare";
@@ -10,7 +14,7 @@ const labels: Record<string, string> = {
   starter: "선발",
   reliever: "불펜",
 };
-export default async function Page({
+async function Page({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -67,6 +71,7 @@ export default async function Page({
         action="/compare"
         key={`${q.players}/${q.window}/${q.q}/${q.role1}/${q.role2}`}
       >
+        <input type="hidden" name="releaseId" value={f.releaseId} />
         <input type="hidden" name="players" value={q.players} />
         <label>
           시즌{" "}
@@ -269,5 +274,11 @@ export default async function Page({
       </div>
       <Link href="/compare">선택 초기화</Link>
     </>
+  );
+}
+
+export default function BoundPage(props: Parameters<typeof Page>[0]) {
+  return withPagePublication(() =>
+    Page({ ...props, searchParams: withoutReleaseQuery(props.searchParams) }),
   );
 }

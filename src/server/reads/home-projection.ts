@@ -38,7 +38,14 @@ export function selectHome(f: Fixture, query: z.infer<typeof homeQuery>) {
           revision: g.revision,
           sourceId: f.sourceId,
           inputRef: `${f.releaseId}/${g.gameId}/${line.playerId}/r${g.revision}`,
-          counts: { ...line, hbp: 0, sf: 0, sac: 0, ci: 0, ibb: 0 },
+          counts: {
+            ...line,
+            hbp: line.hbp ?? 0,
+            sf: line.sf ?? 0,
+            sac: line.sac ?? 0,
+            ci: line.ci ?? 0,
+            ibb: line.ibb ?? 0,
+          },
           walkDefinition: "includes_ibb" as const,
         })),
     );

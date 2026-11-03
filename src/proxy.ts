@@ -1,3 +1,7 @@
+import {
+  withPublication,
+  publicationIdentity,
+} from "./server/repositories/publication";
 import { NextResponse, type NextRequest } from "next/server";
 import { assertInternal, principal } from "./server/ingest/admin";
 import { consumeBudget } from "./server/http/security";
@@ -50,10 +54,13 @@ export function proxy(request: NextRequest) {
         { error: "쿼리 길이 한도 초과" },
         { status: 414 },
       );
-    return NextResponse.next();
+    return bindRelease(request);
   }
   if (!pathname.startsWith("/admin") && !pathname.startsWith("/api/admin"))
-    return NextResponse.next();
+    return ["/", "/compare", "/rankings", "/published"].includes(pathname) ||
+      pathname.startsWith("/players")
+      ? bindRelease(request)
+      : staticReleaseTransport(request);
   try {
     assertInternal(request);
     if (
@@ -72,3 +79,41 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
+
+function bindRelease(request: NextRequest) {
+  const values = request.nextUrl.searchParams.getAll("releaseId");
+  const requested = request.headers.get("x-pulse-release") ?? values[0];
+  if (
+    values.length > 1 ||
+    (values[0] &&
+      request.headers.has("x-pulse-release") &&
+      values[0] !== request.headers.get("x-pulse-release")) ||
+    (requested && !/^[a-zA-Z0-9_-]{1,100}$/.test(requested))
+  )
+    return NextResponse.json(
+      { error: "릴리스 조건을 확인하세요." },
+      { status: 400, headers: { "Cache-Control": "no-store" } },
+    );
+  try {
+    const identity = withPublication(requested, publicationIdentity);
+    const h = new Headers(request.headers);
+    h.set("x-pulse-release", identity.releaseId);
+    return NextResponse.next({ request: { headers: h } });
+  } catch {
+    return NextResponse.json(
+      { error: "게시 릴리스 연결 대기 중입니다." },
+      { status: 503, headers: { "Cache-Control": "no-store" } },
+    );
+  }
+}
+
+// Informational/legal pages remain reachable during publication failures, while
+// their links can carry an existing release through a full-page navigation.
+function staticReleaseTransport(request: NextRequest) {
+  const values = request.nextUrl.searchParams.getAll("releaseId");
+  if (values.length !== 1 || !/^[a-zA-Z0-9_-]{1,100}$/.test(values[0]))
+    return NextResponse.next();
+  const h = new Headers(request.headers);
+  h.set("x-pulse-release", values[0]);
+  return NextResponse.next({ request: { headers: h } });
+}

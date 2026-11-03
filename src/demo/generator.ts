@@ -27,6 +27,11 @@ export function generate(seed = SEED) {
   const teamAt = (p: (typeof players)[number], day: number) =>
     p.playerId === "demo_0_00" && day >= 15 ? "sample_1" : p.teamId;
   type Line = {
+    hbp?: number;
+    sf?: number;
+    sac?: number;
+    ci?: number;
+    ibb?: number;
     playerId: string;
     teamId: string;
     ab: number;
