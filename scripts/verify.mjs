@@ -8,19 +8,21 @@ const steps = [
   ["public E2E", "pnpm", ["test:e2e"]],
   ["admin E2E", "pnpm", ["test:ingest:e2e"]],
 ];
+const env = {
+  ...process.env,
+  DATA_MODE: "DEMO",
+  DEMO_PROFILE: "default",
+  CI: "1",
+  VERIFY_PRODUCTION: "1",
+  ADMIN_ORIGIN: "",
+};
+// Full verification must own its local server, never target an inherited URL.
+delete env.PLAYWRIGHT_BASE_URL;
 for (const [name, command, args] of steps) {
   console.log(`\n>>> ${name}`);
   const result = spawnSync(command, args, {
     stdio: "inherit",
-    env: {
-      ...process.env,
-      DATA_MODE: "DEMO",
-      DEMO_PROFILE: "default",
-      CI: "1",
-      VERIFY_PRODUCTION: "1",
-      PLAYWRIGHT_BASE_URL: "",
-      ADMIN_ORIGIN: "",
-    },
+    env,
   });
   if (result.error || result.status !== 0) {
     console.error(`FAILED: ${name}`, result.error ?? "");
