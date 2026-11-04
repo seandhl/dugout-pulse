@@ -80,7 +80,7 @@ export function HomeDashboard() {
             : "신뢰도 보통"}{" "}
         · 표본 {p.sampleSize}/{windowSize}출전
       </p>
-      <p className="metric-na">이전 기록과의 변화는 아직 제공되지 않습니다.</p>
+      <p className="metric-na">이전 기록 대비 변화: 미제공</p>
       <p className="ds-meta">
         최근 출전 {p.lastAppearance ?? "없음"}
         <br />
@@ -115,7 +115,7 @@ export function HomeDashboard() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="가상 선수명 또는 샘플 팀명"
           />
-          <p className="ds-meta">아래에서 선택한 역할 안에서 검색합니다.</p>
+          <p className="ds-meta">선택한 역할의 선수만 검색합니다.</p>
           {search.trim() && (
             <div aria-live="polite">
               {!data
@@ -172,7 +172,7 @@ export function HomeDashboard() {
         <div className="section-heading">
           <div>
             <span className="eyebrow">선수 기세</span>
-            <h2>역할별 최근 출전 기세 TOP5</h2>
+            <h2>최근 기세 상위 5명</h2>
           </div>
           <span className="badge">DEMO</span>
         </div>
@@ -203,12 +203,7 @@ export function HomeDashboard() {
             선발은 선발 등판, 불펜은 구원 등판만 셉니다.
           </p>
           <Tabs.Content value={role}>
-            <p>
-              선정: 계산 가능한 선수 중 신뢰도 보통 이상 · 기세 점수 내림차순 ·
-              동점은 선수 ID순. 역할 간 점수는 직접 비교하지 않습니다. 0–100점은
-              절대 실력이나 승리확률이 아닙니다. 오늘 경기 예측이 아닌 데이터
-              기준일의 기록 요약입니다.
-            </p>
+            <details className="home-excluded"><summary>랭킹 선정 기준과 점수 해석</summary><p>점수를 계산할 수 있고 신뢰도 보통 이상인 선수만 포함합니다. 점수가 높을수록 위에 표시하며, 동점은 선수 ID순입니다. 역할별 점수는 직접 비교할 수 없고, 승리 확률이나 절대 실력을 의미하지 않습니다.</p></details>
             {error ? (
               <div role="alert" className="panel empty">
                 <p>데이터를 불러오지 못했습니다. 연결을 확인해 주세요.</p>
@@ -259,11 +254,8 @@ export function HomeDashboard() {
       </section>
       <section className="home-section">
         <span className="eyebrow">기록 살펴보기</span>
-        <h2>최근 기록을 살펴보기 좋은 선수</h2>
-        <p>
-          선택한 역할·기간에서 점수 산출이 가능한 선수의 표본 경기 수 내림차순,
-          동점은 선수 ID순입니다. 실력 추천이 아닙니다.
-        </p>
+        <h2>출전 기록이 충분한 선수</h2>
+        <details className="home-excluded"><summary>선정 기준</summary><p>선택한 역할과 기간에서 기세를 계산할 수 있는 선수 중 출전 경기 수가 많은 순서입니다. 동점은 선수 ID순이며 실력 추천이 아닙니다.</p></details>
         <div className="home-grid">{analyzable.map((p) => card(p))}</div>
         {data && !analyzable.length && (
           <p>분석 가능한 표본이 없습니다. 더 긴 기간을 선택해 주세요.</p>
@@ -279,13 +271,13 @@ export function HomeDashboard() {
             부족·휴식·결장에 따라 해석이 달라집니다.
           </p>
           <p className="ds-meta">
-            실험용 점수 모형 {data?.model ?? "확인 중"} · 공식 선수 평가가
+            체험용 점수 모형 {data?.model ?? "확인 중"} · 공식 선수 평가가
             아닙니다.
           </p>
         </div>
         <div>
           <Link href="/compare" className="button">
-            선수 비교 기능 보기 ↗
+            선수 비교하기
           </Link>
           
           <Link href="/about" className="text-button">
