@@ -5,13 +5,13 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <article className="prose">
-      <span className="eyebrow">ABOUT THE PULSE</span>
+      <span className="eyebrow">서비스 안내</span>
       <h1>숫자에 맥락을 더합니다.</h1>
       <p>
         더그아웃 펄스는 타자·선발·불펜의 최근 흐름을 역할별로 살펴보는 비공식
         야구 분석 프로젝트입니다. 경기 결과나 미래 성적을 예측하지 않습니다.
       </p>
-      <h2>DEMO 개발 미리보기</h2>
+      <h2>체험용 데이터 안내</h2>
       <p>
         자체 제작 합성 fixture로 선수 탐색·상세·비교를 제공합니다. 랭킹은 수동
         게시된 데모 스냅샷이 있을 때만 표시합니다. 외부 데이터 공급은 연결하지
