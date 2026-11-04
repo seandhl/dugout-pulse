@@ -1,23 +1,23 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 :root {
-  --bg: #f6f7f9;
-  --surface: #fff;
-  --ink: #142333;
-  --muted: #526273;
-  --line: #dce2e8;
-  --accent: #076b52;
-  --soft: #e7f4ee;
+  --bg: #f7f8fb;
+  --surface: #ffffff;
+  --ink: #1c2736;
+  --muted: #586678;
+  --line: #e1e6ed;
+  --accent: #3158ad;
+  --soft: #eef2fa;
   color-scheme: light;
 }
 :root.dark {
-  --bg: #101923;
-  --surface: #182430;
-  --ink: #f0f5f9;
-  --muted: #b2c0ce;
-  --line: #3a4b5c;
-  --accent: #74e3bc;
-  --soft: #203d35;
+  --bg: #121820;
+  --surface: #1b2530;
+  --ink: #f1f4f9;
+  --muted: #b5c0ce;
+  --line: #354252;
+  --accent: #a9c0ff;
+  --soft: #29364d;
   color-scheme: dark;
 }
 * {
@@ -175,10 +175,10 @@ main {
   min-height: 65vh;
 }
 .eyebrow {
-  color: var(--accent);
-  font-size: 11px;
-  letter-spacing: 2px;
-  font-weight: 800;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0;
+  font-weight: 700;
 }
 .hero {
   position: relative;
@@ -484,8 +484,8 @@ footer a,
   --text-value: clamp(32px, 4vw, 44px);
   --space-card: 24px;
   --border-subtle: 1px solid var(--line);
-  --rise: #076b52;
-  --fall: #ad343e;
+  --rise: #267857;
+  --fall: #b4484b;
   --neutral: var(--muted);
   --chart-primary: var(--accent);
   --chart-secondary: var(--ink);
@@ -1103,7 +1103,7 @@ body {
 .compare-track span {
   display: block;
   height: 100%;
-  background: var(--accent, #26785a);
+  background: var(--accent);
 }
 @media (max-width: 640px) {
   .compare-grid {
@@ -1449,4 +1449,29 @@ label:has(input[type="radio"]) {
 .game-analysis p,
 .home-player p {
   overflow-wrap: anywhere;
+}
+
+/* Editorial refresh: restrained spacing and unobtrusive data presentation. */
+.header-inner { min-height: 76px; }
+.brand { gap: 10px; font-size: 18px; letter-spacing: -0.035em; }
+.brand-mark { width: 32px; height: 32px; border-radius: 7px; font-size: 17px; font-weight: 800; }
+.nav { gap: 26px; }
+.nav a { font-weight: 600; }
+.demo-strip { background: var(--bg); border-bottom: 1px solid var(--line); padding: 9px 16px; color: var(--muted); }
+.badge { letter-spacing: 0; border-color: var(--line); background: var(--bg); color: var(--muted); padding: 3px 7px; border-radius: 6px; }
+.panel { border-radius: 10px; }
+.home-hero { padding-block: 20px 30px; }
+.home-hero h1 { letter-spacing: -0.045em; }
+.home-hero h1 span { color: var(--ink); }
+.home-player { box-shadow: none; }
+.home-player:hover { border-color: var(--accent); }
+.home-score { font-variant-numeric: tabular-nums; }
+.home-status { gap: 14px; }
+.home-notice { color: var(--muted); }
+.home-guide { background: var(--bg); }
+.eyebrow { text-transform: none; }
+@media (max-width: 600px) {
+  .header-inner { min-height: 66px; }
+  .brand { font-size: 16px; }
+  .home-hero { padding-top: 16px; }
 }

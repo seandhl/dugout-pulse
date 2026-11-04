@@ -59,7 +59,7 @@ export function HomeDashboard() {
       key={p.playerId}
     >
       <div className="home-card-top">
-        <span className="eyebrow">{rank ? `TOP ${rank}` : p.team}</span>
+        <span className="eyebrow">{rank ? `${rank}위` : p.team}</span>
         <span className="badge">DEMO</span>
       </div>
       <h3>
@@ -80,7 +80,7 @@ export function HomeDashboard() {
             : "신뢰도 보통"}{" "}
         · 표본 {p.sampleSize}/{windowSize}출전
       </p>
-      <p className="metric-na">변화량 N/A · 홈 API 미제공</p>
+      <p className="metric-na">이전 기록과의 변화는 아직 제공되지 않습니다.</p>
       <p className="ds-meta">
         최근 출전 {p.lastAppearance ?? "없음"}
         <br />
@@ -91,7 +91,7 @@ export function HomeDashboard() {
   return (
     <div className="home-dashboard">
       <section className="home-hero">
-        <span className="eyebrow">RECENT FORM, CLEAR CONTEXT</span>
+        <span className="eyebrow">최근 기록 분석</span>
         <h1>
           지금, 누가
           <br />
@@ -100,7 +100,7 @@ export function HomeDashboard() {
         <p>
           최근 출전 기록으로 읽는 선수의 기세.
           <br />
-          타자·선발·불펜을 나누고, 표본과 신뢰도까지 함께 봅니다.
+          타자·선발·불펜의 최근 기록을 한눈에 비교하세요.
         </p>
         <a href="#momentum" className="button">
           최근 기세 살펴보기 ↓
@@ -171,7 +171,7 @@ export function HomeDashboard() {
       <section id="momentum">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">MOMENTUM WATCH</span>
+            <span className="eyebrow">선수 기세</span>
             <h2>역할별 최근 출전 기세 TOP5</h2>
           </div>
           <span className="badge">DEMO</span>
@@ -224,7 +224,7 @@ export function HomeDashboard() {
               </div>
             ) : !data ? (
               <p role="status" className="panel empty">
-                fixture 기록을 분석하는 중…
+                가상 기록을 분석하는 중…
               </p>
             ) : (
               <>
@@ -258,7 +258,7 @@ export function HomeDashboard() {
         </Tabs.Root>
       </section>
       <section className="home-section">
-        <span className="eyebrow">ENOUGH RECORDS TO EXPLORE</span>
+        <span className="eyebrow">기록 살펴보기</span>
         <h2>최근 기록을 살펴보기 좋은 선수</h2>
         <p>
           선택한 역할·기간에서 점수 산출이 가능한 선수의 표본 경기 수 내림차순,
@@ -271,7 +271,7 @@ export function HomeDashboard() {
       </section>
       <section className="panel home-guide">
         <div>
-          <span className="eyebrow">READ THE SCORE</span>
+          <span className="eyebrow">기세 점수 안내</span>
           <h2>기세는 최근 흐름의 요약입니다.</h2>
           <p>
             동일 시즌·대회·역할의 기록을 기준으로 최근 성과를 요약합니다. 높은
@@ -279,7 +279,7 @@ export function HomeDashboard() {
             부족·휴식·결장에 따라 해석이 달라집니다.
           </p>
           <p className="ds-meta">
-            실험용 DEMO 모델 {data?.model ?? "확인 중"} · 공식 선수 평가가
+            실험용 점수 모형 {data?.model ?? "확인 중"} · 공식 선수 평가가
             아닙니다.
           </p>
         </div>
@@ -287,7 +287,7 @@ export function HomeDashboard() {
           <Link href="/compare" className="button">
             선수 비교 기능 보기 ↗
           </Link>
-          <p className="ds-meta">비교 화면은 개발 미리보기입니다.</p>
+          
           <Link href="/about" className="text-button">
             산식·출처·한계 알아보기 →
           </Link>

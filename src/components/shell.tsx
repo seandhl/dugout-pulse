@@ -56,12 +56,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className="header">
         <div className="header-inner">
           <Link className="brand" href="/" aria-label="더그아웃 펄스 홈">
-            <span className="brand-mark" aria-hidden="true">
-              D<span>↗</span>
-            </span>
-            <span>
-              DUGOUT<span className="brand-accent"> PULSE</span>
-            </span>
+            <span className="brand-mark" aria-hidden="true">D</span>
+            <span>더그아웃 펄스</span>
           </Link>
           <div className="theme">
             <label htmlFor="theme">다크 모드</label>
@@ -79,7 +75,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </header>
       <div className="demo-strip" role="region" aria-label="데모 안내">
         <span className="badge">DEMO</span>
-        <span>DEMO — 가상의 선수와 경기 기록</span>
+        <span>체험용 가상 기록 · 실제 KBO 선수 기록이 아닙니다</span>
       </div>
       {offline && (
         <p className="offline" role="status">
@@ -90,7 +86,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <footer>
-        <span>© DUGOUT PULSE · 비공식 야구 분석 프로젝트</span>
+        <span>더그아웃 펄스 · 비공식 야구 기록 분석</span>
         <Link href="/about">출처 및 데이터 정책</Link>
         <ScoreHelp />
         <Link href="/legal">권리·면책 고지</Link>
@@ -101,7 +97,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           className="text-button"
           onClick={() =>
             toast.info(
-              "DEMO — 가상의 선수와 경기 기록. 공식 기록과 기세 점수는 제공하지 않습니다.",
+              "체험용 가상 기록입니다. 실제 선수의 공식 기록이나 평가 점수가 아닙니다.",
             )
           }
         >
