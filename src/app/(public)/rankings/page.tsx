@@ -142,7 +142,7 @@ async function Page({
       <p>
         기준일 {result.date} (KST) · {q.season}{" "}
         {q.competition === "regular" ? "정규시즌" : "포스트시즌"} ·
-        산식 버전 {result.scoringVersion} · 게시 버전 {result.revision}
+        산식 버전 {result.scoringVersion} · 기록 버전 {result.revision}
       </p>
       <p>
         현재 URL을 복사하면 필터·정렬·페이지를 공유할 수 있습니다. 점수와 변화는
@@ -178,7 +178,7 @@ async function Page({
           key={board.role}
           aria-label={`${labels[board.role]} 랭킹`}
         >
-          <h2>{labels[board.role]} 보드</h2>
+          <h2>{labels[board.role]} 순위</h2>
           <p>
             최근 {q.window}
             {board.role === "hitter"
