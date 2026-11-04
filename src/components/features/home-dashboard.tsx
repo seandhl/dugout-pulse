@@ -198,10 +198,10 @@ export function HomeDashboard() {
               ))}
             </div>
           </fieldset>
-          <p className="ds-meta">
-            짧은 기간은 변화에 민감하고, 긴 기간은 흐름을 안정적으로 봅니다.
-            선발은 선발 등판, 불펜은 구원 등판만 셉니다.
-          </p>
+          <details className="home-excluded">
+            <summary>분석 기간 안내</summary>
+            <p className="ds-meta">짧은 기간은 변화에 민감하고 긴 기간은 흐름을 안정적으로 보여 줍니다. 선발은 선발 등판, 불펜은 구원 등판만 셉니다.</p>
+          </details>
           <Tabs.Content value={role}>
             <details className="home-excluded"><summary>랭킹 선정 기준과 점수 해석</summary><p>점수를 계산할 수 있고 신뢰도 보통 이상인 선수만 포함합니다. 점수가 높을수록 위에 표시하며, 동점은 선수 ID순입니다. 역할별 점수는 직접 비교할 수 없고, 승리 확률이나 절대 실력을 의미하지 않습니다.</p></details>
             {error ? (
