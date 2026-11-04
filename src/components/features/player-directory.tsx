@@ -301,7 +301,7 @@ function Directory() {
               <option value="ops">OPS 높은 순</option>
               <option value="era">ERA 낮은 순</option>
               <option value="score">기세 점수 높은 순</option>
-              <option disabled>기세 변화량 — 이전 스냅샷 없음</option>
+              <option disabled>기세 변화량 — 이전 비교 기록 없음</option>
             </select>
           </label>
           <p>
@@ -371,7 +371,7 @@ function Directory() {
             window.prompt("필터 공유 URL을 복사하세요", window.location.href);
           }}
         >
-          필터 URL 공유
+          검색 조건 공유
         </button>
       </div>
       <p>
@@ -475,8 +475,7 @@ function Directory() {
                     출전 소속 이력(최근순):{" "}
                     {p.teams.map(teamName).join(", ") || "미상"}
                   </p>
-                  <p>주 포지션·등번호: 미제공</p>
-                  <p>등록 여부 미확인 · 등록 스냅샷 없음</p>
+                  <p className="ds-meta">포지션·등번호·등록 상태 미확인</p>
                   <dl className="directory-metrics">
                     <div>
                       <dt>선택 기간 표본</dt>
@@ -556,10 +555,7 @@ function Directory() {
               다음 페이지
             </button>
           </nav>
-          <p>
-            Tab으로 선수와 버튼 이동 · 선수 링크에서 ↑↓, Home, End로 이동 ·
-            Enter로 상세 보기
-          </p>
+          <details className="directory-note"><summary>키보드 사용 안내</summary><p>Tab으로 링크와 버튼을 이동하고, 선수 링크에서 위·아래 화살표, Home, End 키로 탐색할 수 있습니다. Enter로 상세 화면을 엽니다.</p></details>
         </>
       )}
     </>
