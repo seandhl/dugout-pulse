@@ -124,8 +124,8 @@ async function Page({
       <nav className="directory-pagination" aria-label="랭킹 정렬">
         {(
           [
-            ["score", "기세 점수 TOP"],
-            ["change", "최근 변화 TOP"],
+            ["score", "기세 점수순"],
+            ["change", "최근 상승순"],
             ["decline", "하락 변화"],
           ] as const
         ).map(([sort, label]) => (
@@ -142,7 +142,7 @@ async function Page({
       <p>
         기준일 {result.date} (KST) · {q.season}{" "}
         {q.competition === "regular" ? "정규시즌" : "포스트시즌"} ·
-        scoringVersion {result.scoringVersion} · 게시 revision {result.revision}
+        산식 버전 {result.scoringVersion} · 게시 버전 {result.revision}
       </p>
       <p>
         현재 URL을 복사하면 필터·정렬·페이지를 공유할 수 있습니다. 점수와 변화는
