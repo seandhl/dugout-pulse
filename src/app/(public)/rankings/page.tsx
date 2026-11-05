@@ -1,3 +1,4 @@
+import { PlayerAvatarFallback } from "@/components/ui";
 import { publicationIdentity } from "@/server/repositories/publication";
 import {
   withPagePublication,
@@ -58,9 +59,9 @@ async function Page({
         <h1>기세 랭킹</h1>
         <p>게시된 역할별 스냅샷 · 실제 선수 공식 기록이 아닙니다.</p>
         <p>
-          기세 0–100은 절대 실력·승리확률이 아닙니다. 타자·선발·불펜 점수는 직접
-          비교하지 않습니다. 오늘 경기 예측이 아닌 선택 기준일의 최근 출전
-          요약입니다.
+          기세는 최근 출전 기록을 요약한 Dugout Pulse 고유의 0–100점 지표로,
+          절대 실력·승리확률이 아닙니다. 타자·선발·불펜 점수는 직접 비교하지
+          않습니다. 오늘 경기 예측이 아닌 선택 기준일의 최근 출전 요약입니다.
         </p>
         <p>
           DEMO는 2026 정규시즌만 지원합니다. 다른 시즌·대회는 기록 없음으로
@@ -141,11 +142,31 @@ async function Page({
       </nav>
       <p>
         기준일 {result.date} (KST) · {q.season}{" "}
-        {q.competition === "regular" ? "정규시즌" : "포스트시즌"} ·
-        산식 버전 {result.scoringVersion} · 기록 버전 {result.revision}
+        {q.competition === "regular" ? "정규시즌" : "포스트시즌"} · 산식 버전{" "}
+        {result.scoringVersion} · 기록 버전 {result.revision}
       </p>
-      <details className="directory-note"><summary>정렬과 변화량 계산 기준</summary><p>점수와 변화량은 반올림 전 원값으로 정렬합니다. 같은 점수는 공동 순위이며 페이지를 이동해도 순위가 유지됩니다. 변화량은 같은 선수·시즌·대회·역할·기간·모델 버전의 이전 순위 적격 기록과 비교합니다. 상승·하락 탭은 변화량이 양수·음수인 경우만 표시합니다. 현재 주소를 복사하면 필터와 정렬을 공유할 수 있습니다.</p></details>
-      <details className="directory-note"><summary>랭킹 대상과 최소 기록 기준</summary><p>팀 필터는 해당 팀 출전 이력으로 선수를 찾지만, 기세 점수·표본·최근 출전일은 전체 기록 기준입니다. 팀별 기록은 선수 탐색에서 확인하세요. 랭킹에는 등록이 확인되고 신뢰도 보통 이상인 선수만 포함합니다. 타자 3출전·30타석, 선발 2등판·상대한 타자 75명·45아웃, 불펜 3등판·상대한 타자 30명·18아웃 이상이 필요합니다. 표본을 충족해도 신뢰도가 낮으면 제외합니다. <Link href="/about#momentum-formula">산식과 역할별 지표</Link></p></details>
+      <details className="directory-note">
+        <summary>정렬과 변화량 계산 기준</summary>
+        <p>
+          점수와 변화량은 반올림 전 원값으로 정렬합니다. 같은 점수는 공동
+          순위이며 페이지를 이동해도 순위가 유지됩니다. 변화량은 같은
+          선수·시즌·대회·역할·기간·모델 버전의 이전 순위 적격 기록과 비교합니다.
+          상승·하락 탭은 변화량이 양수·음수인 경우만 표시합니다. 현재 주소를
+          복사하면 필터와 정렬을 공유할 수 있습니다.
+        </p>
+      </details>
+      <details className="directory-note">
+        <summary>랭킹 대상과 최소 기록 기준</summary>
+        <p>
+          팀 필터는 해당 팀 출전 이력으로 선수를 찾지만, 기세 점수·표본·최근
+          출전일은 전체 기록 기준입니다. 팀별 기록은 선수 탐색에서 확인하세요.
+          랭킹에는 등록이 확인되고 신뢰도 보통 이상인 선수만 포함합니다. 타자
+          3출전·30타석, 선발 2등판·상대한 타자 75명·45아웃, 불펜 3등판·상대한
+          타자 30명·18아웃 이상이 필요합니다. 표본을 충족해도 신뢰도가 낮으면
+          제외합니다.{" "}
+          <Link href="/about#momentum-formula">산식과 역할별 지표</Link>
+        </p>
+      </details>
       {result.stale && (
         <section className="panel" role="status">
           <h2>기록 미갱신</h2>
@@ -208,14 +229,20 @@ async function Page({
                 <tbody>
                   {board.rows.map((s) => (
                     <tr key={s.id}>
-                      <td>
+                      <td className="ranking-player-cell">
                         {s.rank}.{" "}
                         <Link
+                          className="ranking-player-link"
                           href={`/players/${s.playerId}?season=${q.season}&competition=${q.competition}&snapshot=${s.id}`}
                         >
-                          {s.name}
+                          <PlayerAvatarFallback label={s.name} />
+                          <span>{s.name}</span>
                         </Link>
-                        <p>{s.teams.join(", ") || "소속 미상"}</p>
+                        <p>
+                          {s.teams.join(", ") || "소속 미상"} ·{" "}
+                          {labels[board.role]}
+                        </p>
+                        <p className="ds-meta">포지션 미제공</p>
                       </td>
                       <td>
                         {s.score?.toFixed(1)} /{" "}

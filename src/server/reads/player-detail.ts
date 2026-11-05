@@ -82,6 +82,18 @@ export function selectPlayerDetail(f: Fixture, id: string, window: string) {
             .sort((a, b) => a.date.localeCompare(b.date))
             .at(-1)?.teamId,
       )?.name ?? "소속 미상",
+    seasonRecords: {
+      inputRefs: own.map((r) => r.inputRef),
+      rbi: (() => {
+        const lines = f.games
+          .filter((g) => g.status === "final")
+          .flatMap((g) => g.batting.filter((l) => l.playerId === id));
+        return lines.length &&
+          lines.every((l) => Number.isSafeInteger(l.rbi) && l.rbi >= 0)
+          ? lines.reduce((sum, l) => sum + l.rbi, 0)
+          : null;
+      })(),
+    },
     seasonYear: f.season,
     competition: "정규시즌",
     asOf: f.asOf,

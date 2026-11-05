@@ -64,8 +64,9 @@ test("team records match raw traded appearances while explaining global momentum
   const results = page.getByRole("list", { name: "선수 검색 결과" });
   await expect(results.getByRole("link")).toHaveCount(1);
   await expect(results).toContainText("2026-10-15");
+  await page.getByText("기록과 기세 점수 기준", { exact: true }).click();
   await expect(
-    page.getByText("팀 필터 후에도 전체 기세 점수입니다.", { exact: false }),
+    page.getByText("기세 점수는 역할별 전체 출전 기록 기준", { exact: false }),
   ).toBeVisible();
   const response = await page.request.get(
     "/api/v1/player-directory?q=가상+A-01&team=sample_0&window=20",
@@ -212,7 +213,7 @@ test("shared URL, direct page jump, sort scroll and clamped page stay reproducib
     expect(dialog.defaultValue()).toBe(sharedUrl);
     await dialog.dismiss();
   });
-  await page.getByRole("button", { name: "필터 URL 공유" }).click();
+  await page.getByRole("button", { name: "검색 조건 공유" }).click();
   await page.goto(sharedUrl);
   await expect(results.getByRole("link")).toHaveText(names);
   await page.getByRole("combobox", { name: "정렬", exact: true }).focus();

@@ -1,5 +1,6 @@
 "use client";
 import { releaseFetch } from "@/components/release-provider";
+import { PlayerAvatarFallback } from "@/components/ui";
 import { Skeleton } from "@/components/skeleton";
 import { formatKst } from "@/ui/format";
 import Link from "@/components/release-provider";
@@ -309,8 +310,18 @@ function Directory() {
             신뢰도와 다릅니다.
           </p>
         </fieldset>
-        <p id="roster-reason" className="ds-meta">현재 1군 등록 여부와 주 포지션·등번호 이력은 확인할 수 없습니다.</p>
-        <details className="directory-note"><summary>팀별 기록과 등록 상태 안내</summary><p>시즌 출전은 해당 시즌에 한 경기 이상 출전한 선수를 뜻하며 현재 1군 등록을 의미하지 않습니다. 팀을 선택하면 해당 팀 소속 출전 기록만 추려 최근 경기 기록을 다시 계산합니다. 출전 기록으로 등록 상태를 추정하지 않습니다.</p></details>
+        <p id="roster-reason" className="ds-meta">
+          현재 1군 등록 여부와 주 포지션·등번호 이력은 확인할 수 없습니다.
+        </p>
+        <details className="directory-note">
+          <summary>팀별 기록과 등록 상태 안내</summary>
+          <p>
+            시즌 출전은 해당 시즌에 한 경기 이상 출전한 선수를 뜻하며 현재 1군
+            등록을 의미하지 않습니다. 팀을 선택하면 해당 팀 소속 출전 기록만
+            추려 최근 경기 기록을 다시 계산합니다. 출전 기록으로 등록 상태를
+            추정하지 않습니다.
+          </p>
+        </details>
         <button
           className="button"
           onClick={() => {
@@ -371,7 +382,21 @@ function Directory() {
       <p>
         DEMO는 2026 정규시즌만 지원합니다. 시즌 출전 선수만 탐색할 수 있습니다.
       </p>
-      <details className="directory-note"><summary>기록과 기세 점수 기준</summary><p>{result?.source === "demo-file-source" ? "게시된 가상 파일의 기록으로 계산하며 누락 수치는 미제공으로 표시합니다." : "일부 필수 항목(HBP·SF)이 누락되어 OPS는 제공되지 않습니다."} 누락된 기록은 0으로 대체하지 않습니다. 기세 점수는 역할별 전체 출전 기록 기준이므로 팀 필터의 기록 표본과 다를 수 있습니다.</p></details>
+      <p className="ds-meta">
+        기세 점수는 최근 출전 기록을 요약한 Dugout Pulse 고유의 0–100점
+        지표입니다. 공식 기록이나 미래 활약 예측이 아니며 타자·선발·불펜 간 직접
+        비교는 지원하지 않습니다.
+      </p>
+      <details className="directory-note">
+        <summary>기록과 기세 점수 기준</summary>
+        <p>
+          {result?.source === "demo-file-source"
+            ? "게시된 가상 파일의 기록으로 계산하며 누락 수치는 미제공으로 표시합니다."
+            : "일부 필수 항목(HBP·SF)이 누락되어 OPS는 제공되지 않습니다."}{" "}
+          누락된 기록은 0으로 대체하지 않습니다. 기세 점수는 역할별 전체 출전
+          기록 기준이므로 팀 필터의 기록 표본과 다를 수 있습니다.
+        </p>
+      </details>
       <div ref={resultHeading} tabIndex={-1} role="status" aria-live="polite">
         {!error && !result
           ? "선수 목록을 불러오는 중…"
@@ -413,17 +438,16 @@ function Directory() {
           ) : (
             <ul className="directory-grid" aria-label="선수 검색 결과">
               {result.players.map((p, i) => (
-                <li className="panel" key={p.id}>
+                <li className="panel directory-card" key={p.id}>
                   <div className="directory-identity">
-                    <span className="directory-avatar" aria-hidden="true">
-                      {p.name.slice(0, 1)}
-                    </span>
+                    <PlayerAvatarFallback label={p.name} />
                     <div>
                       <Link
+                        className="directory-player-link"
                         ref={(el) => {
                           links.current[i] = el;
                         }}
-                        href={`/players/${p.id}`}
+                        href={`/players/${p.id}?${new URLSearchParams({ returnTo: `/players?${queryString}` })}`}
                         onClick={() => {
                           try {
                             sessionStorage.setItem(
@@ -454,7 +478,8 @@ function Directory() {
                         {p.name}
                       </Link>
                       <p>
-                        {roles[p.role]} · {p.id}
+                        {p.teams.map(teamName).join(", ") || "소속 미상"} ·{" "}
+                        {roles[p.role]}
                       </p>
                     </div>
                   </div>
@@ -462,7 +487,9 @@ function Directory() {
                     출전 소속 이력(최근순):{" "}
                     {p.teams.map(teamName).join(", ") || "미상"}
                   </p>
-                  <p className="ds-meta">포지션·등번호·등록 상태 미확인</p>
+                  <p className="ds-meta">
+                    포지션 미제공 · 등번호·등록 여부 미확인
+                  </p>
                   <dl className="directory-metrics">
                     <div>
                       <dt>선택 기간 표본</dt>
@@ -483,7 +510,7 @@ function Directory() {
                       </dd>
                     </div>
                     <div>
-                      <dt>전체 기세</dt>
+                      <dt>전체 기세 점수 · 0–100</dt>
                       <dd>
                         {p.score?.toFixed(1) ??
                           "산출 불가: 유효 기세 스냅샷 없음"}
@@ -542,7 +569,13 @@ function Directory() {
               다음 페이지
             </button>
           </nav>
-          <details className="directory-note"><summary>키보드 사용 안내</summary><p>Tab으로 링크와 버튼을 이동하고, 선수 링크에서 위·아래 화살표, Home, End 키로 탐색할 수 있습니다. Enter로 상세 화면을 엽니다.</p></details>
+          <details className="directory-note">
+            <summary>키보드 사용 안내</summary>
+            <p>
+              Tab으로 링크와 버튼을 이동하고, 선수 링크에서 위·아래 화살표,
+              Home, End 키로 탐색할 수 있습니다. Enter로 상세 화면을 엽니다.
+            </p>
+          </details>
         </>
       )}
     </>
