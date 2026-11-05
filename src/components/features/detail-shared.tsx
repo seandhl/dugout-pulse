@@ -1,4 +1,6 @@
 "use client";
+import { useSearchParams } from "next/navigation";
+import { directoryReturnHref } from "@/ui/player-navigation";
 import { formatKst } from "@/ui/format";
 import Link from "@/components/release-provider";
 import { useReleaseRouter } from "@/components/release-provider";
@@ -18,11 +20,12 @@ export function DetailHeader({
   roleLabel: string;
 }) {
   const router = useReleaseRouter();
+  const returnHref = directoryReturnHref(useSearchParams().get("returnTo"));
   const [message, setMessage] = useState("");
   return (
     <>
       <nav aria-label="상세 작업" className="detail-actions">
-        <Link href="/players">← 선수 목록으로</Link>
+        <Link href={returnHref}>← 선수 목록으로</Link>
         <button
           onClick={() => {
             if (history.length > 1) router.back();
@@ -59,6 +62,36 @@ export function DetailHeader({
           타자·선발·불펜 점수는 직접 비교하지 않습니다.
         </p>
         <h1>{d.player.displayName}</h1>
+        <p className="ds-value">
+          기세 점수{" "}
+          {d.momentum?.rawScore == null
+            ? "산출 불가"
+            : `${d.momentum.rawScore.toFixed(1)} / 100`}
+        </p>
+        <p className="ds-meta">
+          Dugout Pulse 고유 지표 ·{" "}
+          {d.window === "season"
+            ? "시즌 전체는 기세 산출 기간이 아닙니다"
+            : `최근 ${d.window}출전/역할 등판 기준`}{" "}
+          · 표본 {d.recent.sample.appearances} · 신뢰도{" "}
+          {d.momentum?.confidence === "high"
+            ? "높음"
+            : d.momentum?.confidence === "medium"
+              ? "보통"
+              : d.momentum?.confidence === "low"
+                ? "낮음"
+                : "산정 불가"}
+        </p>
+        {d.player.listedRoles.includes("batter") &&
+          d.player.listedRoles.some(
+            (r) => r === "starter" || r === "reliever",
+          ) && (
+            <nav aria-label="겸업 선수 기록">
+              <Link href={`/players/${id}?kind=batting`}>타격 상세</Link>
+              {" · "}
+              <Link href={`/players/${id}?kind=pitching`}>투구 상세</Link>
+            </nav>
+          )}
         <p>
           {d.team} · {roleLabel} · 포지션 미제공 · {d.seasonYear}{" "}
           {d.competition}
@@ -104,8 +137,8 @@ export function DetailFooter({ d }: { d: Detail }) {
         </details>
       )}
       <p>
-        출처: {d.source} · DEMO · {d.seasonYear} {d.competition} · 표본{" "}
-        {d.recent.sample.appearances}
+        출처: {d.source} · DEMO · {d.seasonYear} {d.competition} · 기세 분석
+        선택 기간 표본 {d.recent.sample.appearances}
         {!("roleSeason" in d) ? "출전" : "등판"}
       </p>
       <p>

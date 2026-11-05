@@ -11,8 +11,9 @@ test("rankings makes missing snapshots explicit and preserves filter URLs", asyn
   ).toBeVisible();
   for (const role of ["타자", "선발", "불펜"])
     await expect(
-      page.getByRole("heading", { name: `${role} 보드` }),
+      page.getByRole("heading", { name: `${role} 순위` }),
     ).toBeVisible();
+  await page.getByText("정렬과 변화량 계산 기준", { exact: true }).click();
   await expect(page.getByText(/반올림 전 원값으로 정렬/)).toBeVisible();
   await page.getByRole("link", { name: "하락 변화", exact: true }).click();
   const response = await page.request.get(

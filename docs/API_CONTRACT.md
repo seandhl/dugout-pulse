@@ -418,3 +418,9 @@ R04 팀 범위 교정: `/api/v1/player-directory?team=...`의 games/ops/era/last
 `releaseId` 쿼리 또는 `X-Pulse-Release` 요청 헤더로 보존된 릴리스를 고정할 수 있다. 중복/형식 오류/헤더·쿼리 불일치는 400, 미연결/손상/알 수 없는 릴리스는 503이며 최신 내용으로 대체하지 않는다. 게시 후 기본 조회는 새 릴리스 전체를 제공하고, 고정한 과거 릴리스는 그대로 유지한다. 통합 게시는 2026 정규시즌의 완전한 자체 제작 DEMO 입력만 허용한다. 상세 내용은 [검증 수정 기록](PR1_VERIFICATION_FIX.md)을 따른다.
 
 선수 탐색의 선택적 `playerCount`는 필터 전 릴리스 선수 수다. 필터 결과 `total`과 구분한다. 화면은 file 게시 시 고정 합성 데모의 150명/샘플 팀/결측 안내를 재사용하지 않는다.
+
+## 선수 상세 시즌 보조 집계 — 2026-11-05 (추가 호환)
+
+기존 `/api/v1/players/:id/batting` 응답에 `seasonRecords: { rbi: number | null, inputRefs: string[] }`, `/pitching` 응답에 `seasonRecords: { gamesStarted: number | null, inputRefs: string[] }`를 추가한다. 기존 필드·query·모델·fixture·DB 스키마는 유지한다. 저장 스키마 변경이 없어 SQL 마이그레이션은 해당 없으며 기존 클라이언트는 추가 필드를 무시할 수 있다. 새 화면과 read DTO는 함께 배포한다.
+
+`rbi`는 해당 선수의 정규시즌 완료 경기 원시 타점을 합산한다. 한 경기라도 결측/유효하지 않으면 null, 출전이 없으면 null이다. `gamesStarted`는 시즌 전체 투구 출전에서 선발 역할을 센 값으로, 출전이 없으면 null이다. 실제 구원 출전은 있으나 선발이 없으면 0은 유효한 값이다. 두 값은 최근 기간/선택 투구 역할에 영향받지 않는다. `inputRefs`는 시즌 전체 집계에 사용한 완료 경기 원천 참조이며 기존 source/asOf/updatedAt/seasonYear/competition을 함께 사용한다. wRC+·승패를 추가하거나 추정하지 않는다. 단위 테스트 `season-records.test.ts`에서 원시 집계·결측·역할 분리·창 독립성을 검증한다.

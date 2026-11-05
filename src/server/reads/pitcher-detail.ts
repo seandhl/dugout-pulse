@@ -134,6 +134,12 @@ export function selectPitcherDetail(
     },
     asOf: f.asOf,
     updatedAt: f.lastUpdatedAt,
+    seasonRecords: {
+      inputRefs: own.map((r) => r.inputRef),
+      gamesStarted: own.length
+        ? own.filter((r) => r.role === "starting_pitcher").length
+        : null,
+    },
     seasonYear: f.season,
     competition: "정규시즌",
     team: f.teams.find((t) => t.teamId === player.teamId)?.name ?? "소속 미상",

@@ -2,6 +2,9 @@ import {
   withPagePublication,
   withoutReleaseQuery,
 } from "@/server/repositories/page-publication";
+import Link from "@/components/release-provider";
+import { DetailSections } from "@/components/features/detail-sections";
+import { PlayerAvatarFallback } from "@/components/ui";
 import { formatKst } from "@/ui/format";
 import { pipeline } from "@/server/ingest/pipeline";
 import { PitcherDetailView } from "@/components/features/pitcher-detail";
@@ -31,6 +34,8 @@ async function PlayerPage({
 }) {
   const { id } = await params;
   const query = await searchParams;
+  if (query.snapshot !== undefined && typeof query.snapshot !== "string")
+    notFound();
   if (typeof query.snapshot === "string") {
     const state = await pipeline.readPublicState();
     const snapshot = state.momentumSnapshots?.[query.snapshot];
@@ -38,43 +43,112 @@ async function PlayerPage({
     return (
       <article className="panel">
         <span className="badge">DEMO</span>
+        <PlayerAvatarFallback label={id} />
         <h1>{id} 게시 기록 상세</h1>
-        <p>
-          {snapshot.season}{" "}
-          {snapshot.competition === "regular" ? "정규시즌" : "포스트시즌"} ·{" "}
-          {snapshot.role} · 최근 {snapshot.window}출전/등판
+        <p>소속·포지션 미제공 · 게시 기록의 선수 ID로 표시합니다.</p>
+        <p className="ds-value">
+          기세 점수 {snapshot.score?.toFixed(1) ?? "산출 보류"} / 100
         </p>
         <p>
-          점수 {snapshot.score?.toFixed(1) ?? "산출 보류"} · 신뢰도{" "}
-          {snapshot.confidence ?? "미확인"} · 표본 {snapshot.sampleSize}
+          Dugout Pulse 고유 지표 · {snapshot.season}{" "}
+          {snapshot.competition === "regular" ? "정규시즌" : "포스트시즌"} ·
+          최근 {snapshot.window}출전/역할 등판 · 출처{" "}
+          {snapshot.sourceIds.join(", ")} · 기준 {formatKst(snapshot.asOf)}
         </p>
-        <p>
-          기준일 {formatKst(snapshot.asOf)} · 계산{" "}
-          {formatKst(snapshot.computedAt)} · {snapshot.algorithmVersion}
-        </p>
-        <p>
-          출처 {snapshot.sourceIds.join(", ")} · 마지막 경기{" "}
-          {snapshot.dataAsOfGameId ?? "없음"}
-        </p>
-        <details>
-          <summary>원천 참조와 계산 근거</summary>
-          <pre style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
-            {JSON.stringify(
-              {
-                inputRefs: snapshot.inputRefs,
-                explanation: snapshot.explanation,
-              },
-              null,
-              2,
-            )}
-          </pre>
-        </details>
-        <a href="/rankings">랭킹으로 이동</a>
+        <DetailSections
+          season={
+            <section className="panel">
+              <h2>시즌 기록</h2>
+              <p>선택 가능한 시즌 기록이 없습니다.</p>
+              <p>
+                {snapshot.season}{" "}
+                {snapshot.competition === "regular" ? "정규시즌" : "포스트시즌"}{" "}
+                · 출처 {snapshot.sourceIds.join(", ")} · 기준{" "}
+                {formatKst(snapshot.asOf)} · 업데이트(계산){" "}
+                {formatKst(snapshot.computedAt)}
+              </p>
+              <p>
+                데이터 없음: 이 게시 스냅샷에는 시즌 전체 일반 기록이 연결되어
+                있지 않습니다. 다른 시점의 기록을 대신 표시하지 않습니다.
+              </p>
+            </section>
+          }
+        >
+          <p>
+            {snapshot.season}{" "}
+            {snapshot.competition === "regular" ? "정규시즌" : "포스트시즌"} ·{" "}
+            {snapshot.role} · 최근 {snapshot.window}출전/등판
+          </p>
+          <p>
+            점수 {snapshot.score?.toFixed(1) ?? "산출 보류"} · 신뢰도{" "}
+            {snapshot.confidence ?? "미확인"} · 표본 {snapshot.sampleSize}
+          </p>
+          <p>
+            기준일 {formatKst(snapshot.asOf)} · 계산{" "}
+            {formatKst(snapshot.computedAt)} · {snapshot.algorithmVersion}
+          </p>
+          <p>
+            출처 {snapshot.sourceIds.join(", ")} · 마지막 경기{" "}
+            {snapshot.dataAsOfGameId ?? "없음"}
+          </p>
+          <details>
+            <summary>원천 참조와 계산 근거</summary>
+            <pre style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
+              {JSON.stringify(
+                {
+                  inputRefs: snapshot.inputRefs,
+                  explanation: snapshot.explanation,
+                },
+                null,
+                2,
+              )}
+            </pre>
+          </details>
+        </DetailSections>
+        <Link href="/rankings">랭킹으로 이동</Link>
       </article>
     );
   }
 
   if (
+    (query.season !== undefined &&
+      query.season !== String(readDemo().season)) ||
+    (query.competition !== undefined && query.competition !== "regular") ||
+    (query.kind !== undefined &&
+      (typeof query.kind !== "string" ||
+        !["batting", "pitching"].includes(query.kind)))
+  ) {
+    return (
+      <section className="panel">
+        <h1>제공되지 않는 기록 범위</h1>
+        <p>
+          현재 상세는 {readDemo().season} DEMO 정규시즌만 제공합니다. 다른
+          시즌과 포스트시즌 기록을 섞지 않습니다.
+        </p>
+        <Link href={`/players/${id}`}>제공되는 기록 보기</Link>
+      </section>
+    );
+  }
+  const knownPlayer = readDemo().players.find((p) => p.playerId === id);
+  if (
+    knownPlayer &&
+    ((query.kind === "batting" &&
+      !knownPlayer.listedRoles.includes("batter")) ||
+      (query.kind === "pitching" &&
+        !knownPlayer.listedRoles.some(
+          (r) => r === "starter" || r === "reliever",
+        )))
+  ) {
+    return (
+      <section className="panel">
+        <h1>선택한 역할의 기록이 없습니다</h1>
+        <p>선수의 타격·투구 역할을 추정하지 않습니다.</p>
+        <Link href={`/players/${id}`}>제공되는 역할 보기</Link>
+      </section>
+    );
+  }
+  if (
+    query.kind !== "pitching" &&
     readDemo().players.some(
       (p) => p.playerId === id && p.listedRoles.includes("batter"),
     )
